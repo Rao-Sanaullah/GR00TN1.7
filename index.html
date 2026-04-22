@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GR00T N1.7 on WSL2 — Install Guide</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 /* ── DARK THEME (default) ── */
 :root {
@@ -24,10 +24,30 @@
   --yellow-dim: rgba(255,209,102,0.08);
   --red: #ff4d6d;
   --red-dim: rgba(255,77,109,0.08);
-  --text: #c8d6f0;
-  --text2: #7a90b8;
-  --text3: #3d5070;
-  --hero-bg: linear-gradient(135deg, #0a1a0f 0%, #070d18 50%, #0a0c1a 100%);
+
+  /* DARK: bright white text hierarchy */
+  --text:  #ffffff;
+  --text2: #c8d6f0;
+  --text3: #7a90b8;
+  --text4: #3d5070;
+
+  --sec-label-color: #ffffff;
+  --step-title-color: #ffffff;
+  --step-subtitle-color: #7a90b8;
+  --step-done-title: #39ff8f;
+  --p-color: #c8d6f0;
+  --pre-color: #d8e8ff;
+  --toc-item-color: #c8d6f0;
+  --footer-color: #7a90b8;
+
+  --hero-title-color: #ffffff;
+  --hero-sub-color: #c8d6f0;
+
+  --callout-warn-text: #ffd980;
+  --callout-info-text: #7dd8ee;
+  --callout-ok-text:   #7de8aa;
+  --callout-err-text:  #ff8899;
+
   --term-bg: #020508;
   --term-bar: #080f0a;
   --term-border: #0f1e14;
@@ -49,16 +69,36 @@ html.light {
   --green: #0a9e50;
   --green-dim: rgba(10,158,80,0.08);
   --green-mid: rgba(10,158,80,0.15);
-  --cyan: #0080aa;
-  --cyan-dim: rgba(0,128,170,0.08);
-  --yellow: #b07000;
-  --yellow-dim: rgba(176,112,0,0.08);
+  --cyan: #0070aa;
+  --cyan-dim: rgba(0,112,170,0.08);
+  --yellow: #a06000;
+  --yellow-dim: rgba(160,96,0,0.08);
   --red: #cc2244;
   --red-dim: rgba(204,34,68,0.08);
-  --text: #1a2340;
-  --text2: #4a5870;
-  --text3: #8898b0;
-  --hero-bg: linear-gradient(135deg, #e8f5ee 0%, #e8eef8 50%, #eeeaf8 100%);
+
+  /* LIGHT: bold black text hierarchy */
+  --text:  #0a0e18;
+  --text2: #1a2340;
+  --text3: #3a4a60;
+  --text4: #8898b0;
+
+  --sec-label-color: #000000;
+  --step-title-color: #000000;
+  --step-subtitle-color: #3a4a60;
+  --step-done-title: #0a7a3a;
+  --p-color: #1a2340;
+  --pre-color: #1a2340;
+  --toc-item-color: #1a2340;
+  --footer-color: #3a4a60;
+
+  --hero-title-color: #000000;
+  --hero-sub-color: #1a2340;
+
+  --callout-warn-text: #7a4800;
+  --callout-info-text: #004870;
+  --callout-ok-text:   #005830;
+  --callout-err-text:  #8a0020;
+
   --term-bg: #1a2330;
   --term-bar: #141c28;
   --term-border: #243040;
@@ -66,35 +106,28 @@ html.light {
   --term-prompt: #2a8050;
   --term-cmd: #5ad080;
   --term-out: #3a7060;
-  --noise-opacity: 0.2;
+  --noise-opacity: 0.15;
 }
 
-/* theme toggle button */
+/* ── THEME TOGGLE ── */
 .theme-toggle {
   position: fixed;
-  top: 18px;
-  right: 22px;
+  top: 18px; right: 22px;
   z-index: 100;
   background: var(--surface);
   border: 1px solid var(--border2);
-  color: var(--text2);
+  color: var(--text3);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   padding: 7px 14px;
   border-radius: 20px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  display: flex; align-items: center; gap: 7px;
   transition: all 0.2s;
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   letter-spacing: 0.05em;
 }
-.theme-toggle:hover {
-  border-color: var(--green);
-  color: var(--green);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-}
+.theme-toggle:hover { border-color: var(--green); color: var(--green); }
 .theme-toggle .icon { font-size: 13px; transition: transform 0.3s; }
 html.light .theme-toggle .icon { transform: rotate(180deg); }
 
@@ -114,16 +147,14 @@ body {
 
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
+  pointer-events: none; z-index: 0;
   opacity: var(--noise-opacity);
   transition: opacity 0.3s;
 }
 
-/* HERO */
+/* ── HERO ── */
 .hero {
   position: relative;
   padding: 72px 0 56px;
@@ -131,47 +162,35 @@ body::before {
   overflow: hidden;
 }
 .hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 40px 40px;
   mask-image: radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 100%);
   opacity: 0.4;
 }
 .hero-glow {
-  position: absolute;
-  width: 600px; height: 300px;
-  top: -80px; left: 50%;
+  position: absolute; width: 600px; height: 300px; top: -80px; left: 50%;
   transform: translateX(-50%);
   background: radial-gradient(ellipse, rgba(57,255,143,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
+html.light .hero-glow { background: radial-gradient(ellipse, rgba(10,158,80,0.1) 0%, transparent 70%); }
+
 .wrap { max-width: 820px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: inline-flex; align-items: center; gap: 8px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--green);
-  background: var(--green-dim);
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--green); background: var(--green-dim);
   border: 1px solid rgba(57,255,143,0.2);
-  padding: 5px 13px;
-  border-radius: 2px;
-  margin-bottom: 22px;
+  padding: 5px 13px; border-radius: 2px; margin-bottom: 22px;
   animation: fadeUp 0.5s ease both;
 }
+html.light .eyebrow { border-color: rgba(10,158,80,0.3); }
 .eyebrow::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
   animation: pulse 2s ease-in-out infinite;
 }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -179,186 +198,154 @@ body::before {
 .hero-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(52px, 9vw, 96px);
-  letter-spacing: 0.04em;
-  line-height: 0.92;
-  color: #fff;
+  letter-spacing: 0.04em; line-height: 0.92;
+  color: var(--hero-title-color);
   animation: fadeUp 0.5s 0.05s ease both;
 }
 .hero-title .accent { color: var(--green); }
-.hero-title .sub { display: block; font-size: clamp(28px, 5vw, 52px); color: var(--text2); margin-top: 4px; }
+.hero-title .sub {
+  display: block;
+  font-size: clamp(28px, 5vw, 52px);
+  color: var(--hero-sub-color);
+  margin-top: 4px;
+}
 
 .hero-desc {
-  margin-top: 22px;
-  font-size: 15px;
-  color: var(--text2);
-  max-width: 560px;
-  line-height: 1.7;
+  margin-top: 22px; font-size: 15px;
+  color: var(--p-color); max-width: 560px; line-height: 1.7;
   animation: fadeUp 0.5s 0.1s ease both;
+  font-weight: 500;
 }
+
+.hero-credit {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px; color: var(--text4);
+  margin-top: 14px; letter-spacing: 0.08em;
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+.hero-credit a { color: var(--green); text-decoration: none; font-weight: 600; }
+.hero-credit a:hover { text-decoration: underline; }
+
 .hero-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 26px;
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px;
   animation: fadeUp 0.5s 0.15s ease both;
 }
 .hbadge {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  padding: 4px 11px;
-  border-radius: 2px;
-  border: 1px solid;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  padding: 4px 11px; border-radius: 2px; border: 1px solid; font-weight: 500;
 }
-.hb-g { color: var(--green); border-color: rgba(57,255,143,0.25); background: var(--green-dim); }
-.hb-c { color: var(--cyan);  border-color: rgba(0,229,255,0.25);  background: var(--cyan-dim); }
-.hb-y { color: var(--yellow);border-color: rgba(255,209,102,0.25);background: var(--yellow-dim); }
+.hb-g { color: var(--green); border-color: rgba(57,255,143,0.3); background: var(--green-dim); }
+.hb-c { color: var(--cyan);  border-color: rgba(0,229,255,0.3);  background: var(--cyan-dim); }
+.hb-y { color: var(--yellow);border-color: rgba(255,209,102,0.3);background: var(--yellow-dim); }
+html.light .hb-g { border-color: rgba(10,158,80,0.4); }
+html.light .hb-c { border-color: rgba(0,112,170,0.4); }
+html.light .hb-y { border-color: rgba(160,96,0,0.4); }
 
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-/* LAYOUT */
+/* ── LAYOUT ── */
 .page { padding: 52px 0 100px; }
+
 .sec-label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 14px;
-  padding-left: 1px;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--sec-label-color);
+  font-weight: 700;
+  margin-bottom: 14px; padding-left: 1px;
 }
 
-/* CALLOUTS */
+/* ── CALLOUTS ── */
 .callout {
-  border-left: 3px solid;
-  padding: 13px 16px;
-  border-radius: 0 5px 5px 0;
-  font-size: 13.5px;
-  line-height: 1.65;
-  margin-bottom: 10px;
+  border-left: 3px solid; padding: 13px 16px;
+  border-radius: 0 5px 5px 0; font-size: 13.5px; line-height: 1.65; margin-bottom: 10px;
 }
-.callout b { display: block; margin-bottom: 3px; font-weight: 600; }
-.c-warn  { border-color: var(--yellow); background: var(--yellow-dim); color: #e8c87a; }
-.c-info  { border-color: var(--cyan);   background: var(--cyan-dim);   color: #7dd8ee; }
-.c-ok    { border-color: var(--green);  background: var(--green-dim);  color: #7de8aa; }
-.c-err   { border-color: var(--red);    background: var(--red-dim);    color: #f08090; }
+.callout b { display: block; margin-bottom: 3px; font-weight: 700; }
+.c-warn { border-color: var(--yellow); background: var(--yellow-dim); color: var(--callout-warn-text); }
+.c-info { border-color: var(--cyan);   background: var(--cyan-dim);   color: var(--callout-info-text); }
+.c-ok   { border-color: var(--green);  background: var(--green-dim);  color: var(--callout-ok-text); }
+.c-err  { border-color: var(--red);    background: var(--red-dim);    color: var(--callout-err-text); }
 .callout code {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  background: rgba(255,255,255,0.06);
-  padding: 1px 5px;
-  border-radius: 3px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+  background: rgba(128,128,128,0.12); padding: 1px 5px; border-radius: 3px;
 }
 
-/* STEPS */
+/* ── STEPS ── */
 .steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 44px; }
 .step-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  overflow: hidden;
-  transition: border-color 0.2s;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 7px; overflow: hidden; transition: border-color 0.2s, background 0.3s;
 }
 .step-card:hover { border-color: var(--border2); }
-.step-card.open  { border-color: rgba(57,255,143,0.2); }
+.step-card.open  { border-color: rgba(57,255,143,0.3); }
+html.light .step-card.open { border-color: rgba(10,158,80,0.4); }
 
 .step-head {
-  display: grid;
-  grid-template-columns: 48px 1fr auto;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
-  cursor: pointer;
-  user-select: none;
-  border-bottom: 1px solid transparent;
-  transition: background 0.15s;
+  display: grid; grid-template-columns: 48px 1fr auto;
+  align-items: center; gap: 14px; padding: 16px 20px;
+  cursor: pointer; user-select: none;
+  border-bottom: 1px solid transparent; transition: background 0.15s;
 }
-.step-head:hover { background: rgba(255,255,255,0.015); }
+.step-head:hover { background: rgba(128,128,128,0.04); }
 .step-card.open .step-head { border-bottom-color: var(--border); }
 
 .step-num-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.step-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text3); }
+.step-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; color: var(--text3); }
 .step-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border2);
-  background: transparent;
-  transition: all 0.2s;
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1.5px solid var(--border2); background: transparent; transition: all 0.2s;
 }
 .step-card.done .step-dot { background: var(--green); border-color: var(--green); box-shadow: 0 0 8px var(--green); }
 .step-card.open .step-dot { border-color: var(--green); background: var(--green-dim); }
 
-.step-title-wrap { display: flex; flex-direction: column; gap: 2px; }
-.step-title { font-weight: 600; font-size: 14.5px; color: var(--text); }
-.step-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text3); }
-.step-card.done .step-title { color: #8fb; }
+.step-title-wrap { display: flex; flex-direction: column; gap: 3px; }
+.step-title { font-weight: 700; font-size: 14.5px; color: var(--step-title-color); }
+.step-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--step-subtitle-color); }
+.step-card.done .step-title { color: var(--step-done-title); font-weight: 700; }
 
 .step-chevron {
-  font-size: 11px;
-  color: var(--text3);
-  transition: transform 0.22s;
-  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--text3);
+  transition: transform 0.22s; font-family: 'IBM Plex Mono', monospace;
 }
 .step-card.open .step-chevron { transform: rotate(90deg); color: var(--green); }
 
 .step-body {
-  display: none;
-  padding: 22px;
-  flex-direction: column;
-  gap: 16px;
+  display: none; padding: 22px; flex-direction: column; gap: 16px;
   animation: bodyIn 0.18s ease both;
 }
 .step-card.open .step-body { display: flex; }
 @keyframes bodyIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
 
-p { color: var(--text2); font-size: 14px; }
+p { color: var(--p-color); font-size: 14px; font-weight: 500; }
 
-/* CODE BLOCKS */
+/* ── CODE BLOCKS ── */
 .cb { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
 .cb-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 7px 14px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.015);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 14px; border-bottom: 1px solid var(--border);
+  background: rgba(128,128,128,0.04);
 }
-.cb-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text3); }
+.cb-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text3); font-weight: 600; }
 .cb-label span { color: var(--cyan); margin-right: 6px; }
 .copy-btn {
-  background: none;
-  border: 1px solid var(--border2);
-  color: var(--text3);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  padding: 2px 9px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: none; border: 1px solid var(--border2); color: var(--text3);
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  padding: 2px 9px; border-radius: 3px; cursor: pointer; transition: all 0.15s;
 }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.ok    { border-color: var(--green); color: var(--green); }
 
 pre {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  line-height: 1.7;
-  padding: 16px 18px;
-  overflow-x: auto;
-  color: #b0c4de;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;
+  line-height: 1.7; padding: 16px 18px; overflow-x: auto;
+  color: var(--pre-color);
 }
-.cm  { color: #3a5070; }
-.fl  { color: var(--cyan); }
-.st  { color: var(--yellow); }
+.cm { color: var(--text4); }
+.fl { color: var(--cyan); }
+.st { color: var(--yellow); }
 
-/* TERMINAL */
+/* ── TERMINAL ── */
 .terminal { background: var(--term-bg); border: 1px solid var(--term-border); border-radius: 7px; overflow: hidden; transition: background 0.3s; }
-.term-bar {
-  display: flex; align-items: center; gap: 7px;
-  padding: 9px 14px; background: var(--term-bar); border-bottom: 1px solid var(--term-border);
-}
+.term-bar { display: flex; align-items: center; gap: 7px; padding: 9px 14px; background: var(--term-bar); border-bottom: 1px solid var(--term-border); }
 .term-dot { width: 10px; height: 10px; border-radius: 50%; }
 .td1{background:#ff5f5a} .td2{background:#febc2e} .td3{background:#28c840}
 .term-title { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--term-prompt); margin-left: 6px; opacity: 0.6; }
@@ -366,46 +353,58 @@ pre {
 .term-body .t-prompt { color: var(--term-prompt); }
 .term-body .t-cmd    { color: var(--term-cmd); }
 .term-body .t-out    { color: var(--term-out); display: block; }
-.term-body .t-ok     { color: var(--green); font-weight: 600; }
+.term-body .t-ok     { color: var(--green); font-weight: 700; }
 .term-body .t-warn   { color: var(--yellow); }
 .term-body .t-err    { color: var(--red); }
 
-/* DIVIDER */
+/* ── DIVIDER ── */
 .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); margin: 36px 0; }
 
-/* TABLE */
+/* ── TABLE ── */
 .ref-table { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; width: 100%; border-collapse: collapse; font-size: 13px; }
-.ref-table th { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; background: rgba(255,255,255,0.015); }
-.ref-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.035); color: var(--text2); vertical-align: top; }
+.ref-table th {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--sec-label-color); font-weight: 700;
+  padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left;
+  background: rgba(128,128,128,0.04);
+}
+.ref-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--p-color); vertical-align: top; font-weight: 500; }
 .ref-table tr:last-child td { border-bottom: none; }
-.ref-table code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 6px; border-radius: 3px; }
+.ref-table code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 6px; border-radius: 3px; font-weight: 600; }
 
-/* CHECKLIST */
+/* ── CHECKLIST ── */
 .checklist { display: flex; flex-direction: column; gap: 10px; }
-.ci { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--text2); line-height: 1.6; }
-.ci-icon { font-family: 'IBM Plex Mono', monospace; color: var(--green); font-size: 13px; flex-shrink: 0; margin-top: 2px; }
-.ci code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 5px; border-radius: 3px; }
+.ci { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--p-color); line-height: 1.6; font-weight: 500; }
+.ci-icon { font-family: 'IBM Plex Mono', monospace; color: var(--green); font-size: 13px; flex-shrink: 0; margin-top: 2px; font-weight: 700; }
+.ci code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
 
-/* TOC */
+/* ── TOC ── */
 .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 18px 20px; margin-bottom: 36px; }
-.toc-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+.toc-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sec-label-color); font-weight: 700; margin-bottom: 12px; }
 .toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.toc-item { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text2); background: var(--bg2); border: 1px solid var(--border); padding: 4px 11px; border-radius: 3px; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+.toc-item {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--toc-item-color); background: var(--bg2);
+  border: 1px solid var(--border); padding: 4px 11px; border-radius: 3px;
+  cursor: pointer; transition: all 0.15s; text-decoration: none; font-weight: 600;
+}
 .toc-item:hover { border-color: var(--green); color: var(--green); }
-.toc-num { color: var(--text3); margin-right: 5px; }
+.toc-num { color: var(--text4); margin-right: 5px; font-weight: 400; }
 
-/* FOOTER */
+/* ── FOOTER ── */
 footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-.footer-left { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+.footer-left { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--footer-color); font-weight: 600; }
 .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-.footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); text-decoration: none; transition: color 0.15s; }
+.footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--footer-color); text-decoration: none; transition: color 0.15s; font-weight: 600; }
 .footer-links a:hover { color: var(--cyan); }
 
+/* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .hero { padding: 48px 0 36px; }
   .step-head { grid-template-columns: 36px 1fr auto; gap: 10px; padding: 14px 16px; }
   .step-body { padding: 16px; }
   pre { font-size: 11.5px; }
+  .theme-toggle { top: 12px; right: 12px; padding: 5px 10px; }
 }
 </style>
 </head>
@@ -428,7 +427,7 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
     <p class="hero-desc">
       A complete, battle-tested installation guide for NVIDIA Isaac GR00T N1.7 on Windows Subsystem for Linux. Covers fine-tuning setup with real fixes for RTX 5090 Blackwell hardware.
     </p>
-    <p style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text3);margin-top:14px;letter-spacing:0.08em;animation:fadeUp 0.5s 0.2s ease both;">Designed by <span style="color:var(--green);"> <a href="https://github.com/Rao-Sanaullah" target="_blank" style="color:var(--green);">Sanaullah ↗</a></span></p>
+    <p class="hero-credit">Designed by <a href="https://github.com/Rao-Sanaullah" target="_blank">Sanaullah ↗</a></p>
     <div class="hero-badges">
       <span class="hbadge hb-g">GR00T N1.7</span>
       <span class="hbadge hb-c">WSL2 · Ubuntu 22.04</span>
@@ -545,7 +544,7 @@ git lfs install</pre>
         <span class="step-chevron">▶</span>
       </div>
       <div class="step-body">
-        <p>GR00T uses git submodules for external dependencies. The <code style="font-family:monospace;color:var(--cyan);font-size:12px;">--recurse-submodules</code> flag fetches everything in one shot:</p>
+        <p>GR00T uses git submodules for external dependencies. The <code style="font-family:monospace;color:var(--cyan);font-size:12px;font-weight:600;">--recurse-submodules</code> flag fetches everything in one shot:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>git clone --recurse-submodules https://github.com/NVIDIA/Isaac-GR00T
@@ -558,7 +557,7 @@ cd Isaac-GR00T</pre>
       </div>
     </div>
 
-    <!-- S4 PERMISSIONS -->
+    <!-- S4 -->
     <div class="step-card done" id="s4">
       <div class="step-head" onclick="toggle('s4')">
         <div class="step-num-wrap"><span class="step-num">04</span><div class="step-dot"></div></div>
@@ -580,8 +579,7 @@ cd Isaac-GR00T</pre>
 ls -la ..
 
 <span class="cm"># If owned by root, take ownership</span>
-sudo chown -R $USER:$USER .
-</pre>
+sudo chown -R $USER:$USER .</pre>
         </div>
         <div class="terminal">
           <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">what to look for</span></div>
@@ -593,7 +591,7 @@ sudo chown -R $USER:$USER .
       </div>
     </div>
 
-    <!-- S5 UV SYNC -->
+    <!-- S5 -->
     <div class="step-card done" id="s5">
       <div class="step-head" onclick="toggle('s5')">
         <div class="step-num-wrap"><span class="step-num">05</span><div class="step-dot"></div></div>
@@ -637,7 +635,7 @@ uv sync --python 3.10</pre>
       </div>
     </div>
 
-    <!-- S6 CUDA_HOME -->
+    <!-- S6 -->
     <div class="step-card done" id="s6">
       <div class="step-head" onclick="toggle('s6')">
         <div class="step-num-wrap"><span class="step-num">06</span><div class="step-dot"></div></div>
@@ -659,13 +657,12 @@ echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
 source ~/.bashrc</pre>
         </div>
         <div class="callout c-info">
-          <b>Alternatively</b>, run the provided script which sets this and other GPU paths:
-          <code>uv run bash scripts/deployment/dgpu/install_deps.sh</code>
+          <b>Alternatively</b>, run the provided script: <code>uv run bash scripts/deployment/dgpu/install_deps.sh</code>
         </div>
       </div>
     </div>
 
-    <!-- S7 TRITON PATCH -->
+    <!-- S7 -->
     <div class="step-card done" id="s7">
       <div class="step-head" onclick="toggle('s7')">
         <div class="step-num-wrap"><span class="step-num">07</span><div class="step-dot"></div></div>
@@ -689,24 +686,23 @@ source ~/.bashrc</pre>
           <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
           <div class="term-body">
             <span><span class="t-prompt">$ </span><span class="t-cmd">uv run bash scripts/patch_triton_cuda13.sh</span></span><br>
-            <span class="t-out">Uninstalled 1 package in 2ms</span><br>
-            <span class="t-out">Installed 1 package in 8ms</span><br>
+            <span class="t-out">Uninstalled 1 package in 2ms · Installed 1 package in 8ms</span><br>
             <span class="t-ok">Patched .../triton/backends/nvidia/compiler.py to support CUDA 13.x</span><br>
             <span class="t-ok">Installed triton_cuda13_patch.pth (runtime monkey-patch, survives uv reinstalls)</span>
           </div>
         </div>
         <div class="callout c-info">
           <b>Why "cuda13"?</b>
-          The script is named for Thor/Spark CUDA 13.x platforms but fixes the same sm_ version detection bug affecting sm_120 on CUDA 12.8. Run it regardless of your CUDA version.
+          Named for Thor/Spark CUDA 13.x platforms but fixes the same sm_ version detection bug affecting sm_120 on CUDA 12.8.
         </div>
         <div class="callout c-warn">
           <b>Still hitting torch.compile errors after the patch?</b>
-          Set <code>TORCH_COMPILE=0</code> in your environment. TensorRT inference is fully supported on Blackwell regardless.
+          Set <code>TORCH_COMPILE=0</code> in your environment.
         </div>
       </div>
     </div>
 
-    <!-- S8 VERIFY -->
+    <!-- S8 -->
     <div class="step-card done" id="s8">
       <div class="step-head" onclick="toggle('s8')">
         <div class="step-num-wrap"><span class="step-num">08</span><div class="step-dot"></div></div>
@@ -742,7 +738,7 @@ source ~/.bashrc</pre>
       </div>
     </div>
 
-    <!-- S9 FINE-TUNE -->
+    <!-- S9 -->
     <div class="step-card" id="s9">
       <div class="step-head" onclick="toggle('s9')">
         <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
@@ -753,7 +749,7 @@ source ~/.bashrc</pre>
         <span class="step-chevron">▶</span>
       </div>
       <div class="step-body">
-        <p>Replace the dataset path and modality config with your own. The demo below uses the included SO100 5-episode dataset as a smoke test:</p>
+        <p>Replace dataset path and modality config with your own. Demo below uses the included SO100 5-episode dataset as a smoke test:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash — single GPU</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>CUDA_VISIBLE_DEVICES=0 uv run python \
@@ -770,7 +766,7 @@ source ~/.bashrc</pre>
         </div>
         <div class="callout c-warn">
           <b>OOM on 32GB VRAM?</b>
-          The repo recommends 40GB+. Start with <code>--global-batch-size 16</code> or lower. Smaller batches work fine with more steps.
+          Start with <code>--global-batch-size 8</code> or <code>16</code>. The 40GB+ recommendation is for batch-32; smaller batches work fine with more steps.
         </div>
         <div class="callout c-ok">
           <b>Using your own robot data?</b>
@@ -788,12 +784,12 @@ source ~/.bashrc</pre>
     <span class="fl">--action-horizon</span> 16</pre>
         </div>
         <div class="callout c-info">
-          Saves a JPEG to <code>/tmp/open_loop_eval/traj_0.jpeg</code> — ground truth vs predicted actions with MSE. Expect 5–6% variance between runs due to non-deterministic augmentations.
+          Saves a JPEG to <code>/tmp/open_loop_eval/traj_0.jpeg</code> — ground truth vs predicted actions with MSE. Expect 5–6% run-to-run variance due to non-deterministic augmentations.
         </div>
       </div>
     </div>
 
-    <!-- S10 INFERENCE RESULTS -->
+    <!-- S10 RESULTS -->
     <div class="step-card done" id="s10">
       <div class="step-head" onclick="toggle('s10')">
         <div class="step-num-wrap"><span class="step-num">10</span><div class="step-dot"></div></div>
@@ -808,88 +804,80 @@ source ~/.bashrc</pre>
           <b>✓ Zero-shot inference working on RTX 5090 — no fine-tuning required for these results.</b>
           Base model nvidia/GR00T-N1.7-3B evaluated on the included DROID demo dataset, 2 trajectories, 200 steps each.
         </div>
-
-        <!-- METRICS -->
         <p>Accuracy metrics (lower is better):</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 1</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 1</div>
             <div style="display:flex;flex-direction:column;gap:6px;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MSE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:600;">0.0033</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MSE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:700;">0.0033</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MAE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:600;">0.0376</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MAE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:700;">0.0376</span>
               </div>
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px;">266 timesteps · 25 inference steps</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);margin-top:4px;">266 timesteps · 25 inference steps</div>
             </div>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 2</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 2</div>
             <div style="display:flex;flex-direction:column;gap:6px;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MSE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:600;">0.0369</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MSE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:700;">0.0369</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MAE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:600;">0.1168</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MAE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:700;">0.1168</span>
               </div>
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px;">411 timesteps · 25 inference steps</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);margin-top:4px;">411 timesteps · 25 inference steps</div>
             </div>
           </div>
         </div>
-
-        <!-- SUMMARY ROW -->
         <div style="background:var(--bg2);border:1px solid rgba(57,255,143,0.2);border-radius:6px;padding:14px 18px;display:flex;gap:32px;flex-wrap:wrap;">
           <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MSE</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:600;">0.0201</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MSE</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:700;">0.0201</div>
           </div>
           <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MAE</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:600;">0.0772</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MAE</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:700;">0.0772</div>
           </div>
           <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg Step Time</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:600;">0.230s</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg Step Time</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;">0.230s</div>
           </div>
           <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Total Steps</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:600;">48</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Total Steps</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;">48</div>
           </div>
         </div>
-
-        <!-- TIMING -->
         <p>Detailed timing on RTX 5090:</p>
         <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);padding:7px 14px;border-bottom:1px solid var(--border);letter-spacing:0.12em;text-transform:uppercase;background:rgba(255,255,255,0.015);">Timing Summary</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;padding:7px 14px;border-bottom:1px solid var(--border);letter-spacing:0.12em;text-transform:uppercase;background:rgba(128,128,128,0.04);">Timing Summary</div>
           <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
             <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);">Model load (one-time)</span><span style="color:var(--text2);">401.8s</span>
+              <span style="color:var(--text3);font-weight:600;">Model load (one-time)</span><span style="color:var(--p-color);font-weight:600;">401.8s</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);">Total inference (48 steps)</span><span style="color:var(--text2);">11.04s</span>
+              <span style="color:var(--text3);font-weight:600;">Total inference (48 steps)</span><span style="color:var(--p-color);font-weight:600;">11.04s</span>
             </div>
             <div style="height:1px;background:var(--border);margin:2px 0;"></div>
             <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);">Avg per step</span><span style="color:var(--green);font-weight:600;">0.2301s</span>
+              <span style="color:var(--text3);font-weight:600;">Avg per step</span><span style="color:var(--green);font-weight:700;">0.2301s</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);">Min step time</span><span style="color:var(--green);">0.1631s</span>
+              <span style="color:var(--text3);font-weight:600;">Min step time</span><span style="color:var(--green);font-weight:600;">0.1631s</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);">Max step time</span><span style="color:var(--text2);">0.3694s</span>
+              <span style="color:var(--text3);font-weight:600;">Max step time</span><span style="color:var(--p-color);font-weight:600;">0.3694s</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);">P90 step time</span><span style="color:var(--text2);">0.2948s</span>
+              <span style="color:var(--text3);font-weight:600;">P90 step time</span><span style="color:var(--p-color);font-weight:600;">0.2948s</span>
             </div>
           </div>
         </div>
-
-        <!-- FULL TERMINAL OUTPUT -->
         <p>Full terminal output:</p>
         <div class="terminal">
           <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output — RTX 5090 · WSL2</span></div>
@@ -912,7 +900,6 @@ source ~/.bashrc</pre>
             <span class="t-ok">Done ✓</span>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -954,6 +941,7 @@ source ~/.bashrc</pre>
     <a href="https://github.com/NVIDIA/Isaac-GR00T" target="_blank">Official Repo ↗</a>
     <a href="https://developer.nvidia.com/isaac/gr00t" target="_blank">NVIDIA Isaac ↗</a>
     <a href="https://huggingface.co/nvidia/GR00T-N1.7-3B" target="_blank">HuggingFace ↗</a>
+    <a href="https://arxiv.org/abs/2503.14734" target="_blank">Paper ↗</a>
   </div>
 </footer>
 
@@ -964,26 +952,19 @@ function toggleTheme() {
   const isLight = html.classList.toggle('light');
   btn.querySelector('.icon').textContent = isLight ? '🌙' : '☀';
   btn.querySelector('.label').textContent = isLight ? 'Dark' : 'Light';
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  localStorage.setItem('groot-theme', isLight ? 'light' : 'dark');
 }
-
-// Restore saved preference on load
 (function() {
-  const saved = localStorage.getItem('theme');
+  const saved = localStorage.getItem('groot-theme');
   if (saved === 'light') {
     document.documentElement.classList.add('light');
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.querySelector('.theme-toggle');
-      if (btn) {
-        btn.querySelector('.icon').textContent = '🌙';
-        btn.querySelector('.label').textContent = 'Dark';
-      }
+      if (btn) { btn.querySelector('.icon').textContent = '🌙'; btn.querySelector('.label').textContent = 'Dark'; }
     });
   }
 })();
-function toggle(id) {
-  document.getElementById(id).classList.toggle('open');
-}
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
 function openStep(id) {
   const el = document.getElementById(id);
   el.classList.add('open');
@@ -992,8 +973,7 @@ function openStep(id) {
 function cp(btn) {
   const pre = btn.closest('.cb').querySelector('pre');
   navigator.clipboard.writeText(pre.innerText).then(() => {
-    btn.textContent = 'copied!';
-    btn.classList.add('ok');
+    btn.textContent = 'copied!'; btn.classList.add('ok');
     setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('ok'); }, 2000);
   });
 }
