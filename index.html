@@ -7,6 +7,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+/* ── DARK THEME (default) ── */
 :root {
   --bg: #05080d;
   --bg2: #080c14;
@@ -26,7 +27,76 @@
   --text: #c8d6f0;
   --text2: #7a90b8;
   --text3: #3d5070;
+  --hero-bg: linear-gradient(135deg, #0a1a0f 0%, #070d18 50%, #0a0c1a 100%);
+  --term-bg: #020508;
+  --term-bar: #080f0a;
+  --term-border: #0f1e14;
+  --term-text: #4a7a5a;
+  --term-prompt: #1e6640;
+  --term-cmd: #6be89a;
+  --term-out: #3a6050;
+  --noise-opacity: 0.6;
 }
+
+/* ── LIGHT THEME ── */
+html.light {
+  --bg: #f4f6fa;
+  --bg2: #ebeef5;
+  --surface: #ffffff;
+  --surface2: #f0f3f9;
+  --border: #d0d8e8;
+  --border2: #b8c4d8;
+  --green: #0a9e50;
+  --green-dim: rgba(10,158,80,0.08);
+  --green-mid: rgba(10,158,80,0.15);
+  --cyan: #0080aa;
+  --cyan-dim: rgba(0,128,170,0.08);
+  --yellow: #b07000;
+  --yellow-dim: rgba(176,112,0,0.08);
+  --red: #cc2244;
+  --red-dim: rgba(204,34,68,0.08);
+  --text: #1a2340;
+  --text2: #4a5870;
+  --text3: #8898b0;
+  --hero-bg: linear-gradient(135deg, #e8f5ee 0%, #e8eef8 50%, #eeeaf8 100%);
+  --term-bg: #1a2330;
+  --term-bar: #141c28;
+  --term-border: #243040;
+  --term-text: #4a9a6a;
+  --term-prompt: #2a8050;
+  --term-cmd: #5ad080;
+  --term-out: #3a7060;
+  --noise-opacity: 0.2;
+}
+
+/* theme toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 100;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  letter-spacing: 0.05em;
+}
+.theme-toggle:hover {
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+}
+.theme-toggle .icon { font-size: 13px; transition: transform 0.3s; }
+html.light .theme-toggle .icon { transform: rotate(180deg); }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -39,6 +109,7 @@ body {
   line-height: 1.75;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
 body::before {
@@ -48,7 +119,8 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 0;
-  opacity: 0.6;
+  opacity: var(--noise-opacity);
+  transition: opacity 0.3s;
 }
 
 /* HERO */
@@ -282,20 +354,20 @@ pre {
 .st  { color: var(--yellow); }
 
 /* TERMINAL */
-.terminal { background: #020508; border: 1px solid #0f1e14; border-radius: 7px; overflow: hidden; }
+.terminal { background: var(--term-bg); border: 1px solid var(--term-border); border-radius: 7px; overflow: hidden; transition: background 0.3s; }
 .term-bar {
   display: flex; align-items: center; gap: 7px;
-  padding: 9px 14px; background: #080f0a; border-bottom: 1px solid #0f1e14;
+  padding: 9px 14px; background: var(--term-bar); border-bottom: 1px solid var(--term-border);
 }
 .term-dot { width: 10px; height: 10px; border-radius: 50%; }
 .td1{background:#ff5f5a} .td2{background:#febc2e} .td3{background:#28c840}
-.term-title { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #2a4030; margin-left: 6px; }
-.term-body { padding: 14px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.7; color: #4a7a5a; }
-.term-body .t-prompt { color: #1e6640; }
-.term-body .t-cmd    { color: #6be89a; }
-.term-body .t-out    { color: #3a6050; display: block; }
+.term-title { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--term-prompt); margin-left: 6px; opacity: 0.6; }
+.term-body { padding: 14px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.7; color: var(--term-text); }
+.term-body .t-prompt { color: var(--term-prompt); }
+.term-body .t-cmd    { color: var(--term-cmd); }
+.term-body .t-out    { color: var(--term-out); display: block; }
 .term-body .t-ok     { color: var(--green); font-weight: 600; }
-.term-body .t-warn   { color: #8a7030; }
+.term-body .t-warn   { color: var(--yellow); }
 .term-body .t-err    { color: var(--red); }
 
 /* DIVIDER */
@@ -339,11 +411,16 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
 </head>
 <body>
 
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+  <span class="icon">☀</span>
+  <span class="label">Light</span>
+</button>
+
 <header class="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
   <div class="wrap">
-    <div class="eyebrow">Complete Install Guide</div>
+    <div class="eyebrow">Community Install Guide</div>
     <h1 class="hero-title">
       <span class="accent">GR00T</span> N1.7
       <span class="sub">on WSL2 Ubuntu 22.04</span>
@@ -351,7 +428,7 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
     <p class="hero-desc">
       A complete, battle-tested installation guide for NVIDIA Isaac GR00T N1.7 on Windows Subsystem for Linux. Covers fine-tuning setup with real fixes for RTX 5090 Blackwell hardware.
     </p>
-    <p style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text3);margin-top:14px;letter-spacing:0.08em;animation:fadeUp 0.5s 0.2s ease both;">Designed by <span style="color:var(--green);"> <a href="https://github.com/Rao-Sanaullah" target="_blank" style="color:var(--green);">Sanaullah</a></span></p>
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text3);margin-top:14px;letter-spacing:0.08em;animation:fadeUp 0.5s 0.2s ease both;">Designed by <span style="color:var(--green);">Sam</span></p>
     <div class="hero-badges">
       <span class="hbadge hb-g">GR00T N1.7</span>
       <span class="hbadge hb-c">WSL2 · Ubuntu 22.04</span>
@@ -882,6 +959,29 @@ source ~/.bashrc</pre>
 </footer>
 
 <script>
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.querySelector('.theme-toggle');
+  const isLight = html.classList.toggle('light');
+  btn.querySelector('.icon').textContent = isLight ? '🌙' : '☀';
+  btn.querySelector('.label').textContent = isLight ? 'Dark' : 'Light';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}
+
+// Restore saved preference on load
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.documentElement.classList.add('light');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector('.theme-toggle');
+      if (btn) {
+        btn.querySelector('.icon').textContent = '🌙';
+        btn.querySelector('.label').textContent = 'Dark';
+      }
+    });
+  }
+})();
 function toggle(id) {
   document.getElementById(id).classList.toggle('open');
 }
