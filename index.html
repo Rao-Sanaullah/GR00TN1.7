@@ -762,7 +762,7 @@ source ~/.bashrc</pre>
         <div class="step-head" onclick="toggle('s9')">
           <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
           <div class="step-title-wrap">
-            <span class="step-title">Run Fine-tuning on Your Robot Data</span>
+            <span class="step-title">Run Fine-tuning on Your Custom Data</span>
             <span class="step-subtitle">NEW_EMBODIMENT · single GPU</span>
           </div>
           <span class="step-chevron">▶</span>
@@ -791,7 +791,7 @@ source ~/.bashrc</pre>
             Use <code>--global-batch-size 4 --gradient-accumulation-steps 8</code>. Install bitsandbytes for 8-bit Adam: <code>pip install bitsandbytes</code>
           </div>
           <div class="callout c-ok">
-            <b>Using your own robot data?</b>
+            <b>Using your own data?</b>
             Replace the dataset path with your dataset and provide your own modality config via <code>--modality-config-path</code>. See <code>getting_started/finetune_new_embodiment.md</code> for the full data format spec.
           </div>
         </div>
@@ -921,8 +921,6 @@ source ~/.bashrc</pre>
       <div class="arch-arrow">↓ --gpus all</div>
       <div class="arch-row">
         <div class="arch-box arch-green">grootn17 container<br><span style="font-size:9px;font-weight:400;">GR00T N1.7 · /workspace/.venv · port 5555</span></div>
-        <div class="arch-arrow">←→</div>
-        <div class="arch-box arch-cyan">robotics container<br><span style="font-size:9px;font-weight:400;">IsaacLab · ZMQ client · port 5556</span></div>
       </div>
       <div class="arch-arrow">↑ -v host_path:/data</div>
       <div class="arch-row">
@@ -1099,7 +1097,7 @@ DOCKER_BUILDKIT=1 docker build \
           <div class="callout c-info">
             <b>Volume mount guide:</b><br>
             <code>-v /path/to/Isaac-GR00T:/data</code> — your cloned repo, live-editable<br>
-            <code>-v /path/to/datasets:/workspace/datasets</code> — robot training data<br>
+            <code>-v /path/to/datasets:/workspace/datasets</code> — training datasets<br>
             <code>-v /path/to/models:/workspace/models</code> — fine-tuned checkpoints output<br>
             The venv lives at <code>/workspace/.venv</code> inside the image — untouched by mounts.
           </div>
@@ -1201,7 +1199,7 @@ python scripts/deployment/standalone_inference_script.py \
     <span class="fl">--action-horizon</span>  8</pre>
           </div>
           <div class="callout c-ok">
-            <b>Policy server mode</b> — for real robot or simulation deployment, start the server then connect a client:<br>
+            <b>Policy server mode</b> — run the model as a server for external clients over ZMQ:<br>
             <code>python gr00t/eval/run_gr00t_server.py --model-path nvidia/GR00T-N1.7-3B --embodiment-tag OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT --device cuda:0 --host 0.0.0.0 --port 5555</code>
           </div>
         </div>
@@ -1211,7 +1209,7 @@ python scripts/deployment/standalone_inference_script.py \
         <div class="step-head" onclick="toggle('d9')">
           <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
           <div class="step-title-wrap">
-            <span class="step-title">Fine-tune on Your Robot Data</span>
+            <span class="step-title">Fine-tune on Your Custom Data</span>
             <span class="step-subtitle">NEW_EMBODIMENT · custom modality config</span>
           </div>
           <span class="step-chevron">▶</span>
@@ -1223,7 +1221,7 @@ python scripts/deployment/standalone_inference_script.py \
             <pre">cd /data
 
 <span class="cm"># Copy your modality config into the repo</span>
-mkdir -p examples/MY_ROBOT
+mkdir -p examples/MY_EMBODIMENT
 
 <span class="cm"># Run fine-tuning</span>
 CUDA_VISIBLE_DEVICES=0 \
@@ -1232,7 +1230,7 @@ python gr00t/experiment/launch_finetune.py \
     <span class="fl">--base-model-path</span>       nvidia/GR00T-N1.7-3B \
     <span class="fl">--dataset-path</span>          /workspace/datasets/your-dataset \
     <span class="fl">--embodiment-tag</span>        NEW_EMBODIMENT \
-    <span class="fl">--modality-config-path</span>  examples/MY_ROBOT/my_robot_config.py \
+    <span class="fl">--modality-config-path</span>  examples/MY_EMBODIMENT/my_config.py \
     <span class="fl">--num-gpus</span>              1 \
     <span class="fl">--output-dir</span>            /workspace/models/grootn17_finetuned \
     <span class="fl">--max-steps</span>             5000 \
@@ -1340,7 +1338,7 @@ docker run -it --gpus all \
       <div class="ci"><span class="ci-icon pu">→</span><span>Always mount your repo to <code>/data</code>, not <code>/workspace</code> — mounting over <code>/workspace</code> hides the installed venv</span></div>
       <div class="ci"><span class="ci-icon pu">→</span><span>Use <code>--ipc=host --shm-size=16g</code> — required for multi-worker dataloaders during fine-tuning</span></div>
       <div class="ci"><span class="ci-icon pu">→</span><span>Multiple containers on the same machine share the GPU — only run one fine-tuning job at a time</span></div>
-      <div class="ci"><span class="ci-icon pu">→</span><span>For multi-container inference (policy server + simulation), put all containers on the same Docker network so they resolve each other by name</span></div>
+      <div class="ci"><span class="ci-icon pu">→</span><span>For multi-container setups (policy server + client), put all containers on the same Docker network so they resolve each other by name</span></div>
       <div class="ci"><span class="ci-icon pu">→</span><span>Paths with spaces must be quoted in <code>-v</code> arguments: <code>-v "/my path/repo:/data"</code></span></div>
       <div class="ci"><span class="ci-icon pu">→</span><span>Use <code>PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True</code> to reduce fragmentation OOM errors during fine-tuning</span></div>
     </div>
