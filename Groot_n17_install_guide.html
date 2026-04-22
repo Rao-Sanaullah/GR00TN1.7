@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GR00T N1.7 — WSL2 Fine-Tune Install Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --border: #1e2330;
+    --accent: #76ff80;
+    --accent2: #00cfff;
+    --warn: #ffb347;
+    --danger: #ff5f5f;
+    --text: #dde3f0;
+    --muted: #6b7592;
+    --code-bg: #0d1117;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 0 0 80px;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d1f14 0%, #091520 50%, #0d0f1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 10% 50%, rgba(118,255,128,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 60% at 90% 20%, rgba(0,207,255,0.05) 0%, transparent 70%);
+  }
+  .header-tag {
+    display: inline-block;
+    background: rgba(118,255,128,0.12);
+    border: 1px solid rgba(118,255,128,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+  }
+  .badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    position: relative;
+  }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+  .badge-green { color: var(--accent); border-color: rgba(118,255,128,0.3); background: rgba(118,255,128,0.07); }
+  .badge-blue  { color: var(--accent2); border-color: rgba(0,207,255,0.3); background: rgba(0,207,255,0.07); }
+  .badge-warn  { color: var(--warn); border-color: rgba(255,179,71,0.3); background: rgba(255,179,71,0.07); }
+
+  /* LAYOUT */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* STEP */
+  .steps { margin-top: 40px; display: flex; flex-direction: column; gap: 6px; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+  }
+  .step-header:hover { background: rgba(255,255,255,0.02); }
+  .step.open .step-header { border-bottom-color: var(--border); }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    background: rgba(118,255,128,0.1);
+    border: 1px solid rgba(118,255,128,0.3);
+    color: var(--accent);
+  }
+  .step-title { font-weight: 700; font-size: 15px; flex: 1; }
+  .step-arrow {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .step.open .step-arrow { transform: rotate(90deg); }
+
+  .step-body {
+    display: none;
+    padding: 22px;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .step.open .step-body { display: flex; }
+
+  p { color: var(--text); }
+
+  /* ALERTS */
+  .alert {
+    border-left: 3px solid;
+    padding: 12px 16px;
+    border-radius: 0 4px 4px 0;
+    font-size: 13.5px;
+  }
+  .alert-warn  { border-color: var(--warn);   background: rgba(255,179,71,0.07);  color: #f0c882; }
+  .alert-info  { border-color: var(--accent2); background: rgba(0,207,255,0.07); color: #9ee6f8; }
+  .alert-danger{ border-color: var(--danger); background: rgba(255,95,95,0.07);  color: #ffaaaa; }
+  .alert-green { border-color: var(--accent); background: rgba(118,255,128,0.07); color: #a6ffac; }
+  .alert strong { font-weight: 700; display: block; margin-bottom: 3px; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    padding: 16px;
+    overflow-x: auto;
+    color: #c9d1e0;
+  }
+  pre .comment { color: #4a5568; }
+  pre .cmd     { color: var(--accent); }
+  pre .flag    { color: var(--accent2); }
+  pre .str     { color: #f0c882; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: rgba(255,255,255,0.05);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent2);
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 32px;
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+
+  /* CHECKLIST */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13.5px;
+  }
+  .check-icon {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 60px;
+    border-top: 1px solid var(--border);
+    padding: 28px 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-tag">Installation Guide</div>
+    <h1>NVIDIA Isaac <span>GR00T N1.7</span></h1>
+    <p class="subtitle">WSL2 · Ubuntu 22.04 · RTX 5090 · Fine-tuning Setup</p>
+    <div class="badges">
+      <span class="badge badge-green">Apache 2.0</span>
+      <span class="badge badge-blue">CUDA 12.8</span>
+      <span class="badge badge-blue">Python 3.10</span>
+      <span class="badge badge-warn">RTX 5090 · sm_120</span>
+      <span class="badge badge-warn">40GB+ VRAM Recommended</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="section-label">⚠ Before You Begin</div>
+  <div class="alert alert-warn" style="border-radius:4px;margin-bottom:6px;">
+    <strong>RTX 5090 (Blackwell / sm_120) Note</strong>
+    The 5090 is a Blackwell GPU. Triton 3.3.1 (pinned by PyTorch 2.7) does NOT support sm_120. You will need to run a patch script after install. This guide covers it in Step 6.
+  </div>
+  <div class="alert alert-info" style="border-radius:4px;">
+    <strong>CUDA Drivers Already Installed</strong>
+    Since you have CUDA drivers on Windows, WSL2 automatically shares them. Do NOT install a separate CUDA driver inside WSL — only install the CUDA toolkit if needed.
+  </div>
+
+  <div class="section-label">Step-by-step Installation</div>
+  <div class="steps">
+
+    <!-- STEP 1 -->
+    <div class="step open" id="s1">
+      <div class="step-header" onclick="toggle('s1')">
+        <div class="step-num">1</div>
+        <div class="step-title">Verify CUDA & WSL2 Prerequisites</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>Confirm your GPU and CUDA are visible inside WSL2:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash — WSL2 terminal</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre><span class="comment"># Should show RTX 5090 and driver version</span>
+nvidia-smi
+
+<span class="comment"># Should return something like: release 12.8</span>
+nvcc --version</pre>
+        </div>
+        <div class="alert alert-warn">
+          <strong>nvcc not found?</strong>
+          Install the CUDA toolkit (not driver) inside WSL: <br>
+          <code style="font-family:monospace;font-size:12px;">sudo apt install -y nvidia-cuda-toolkit</code><br>
+          Or follow NVIDIA's CUDA on WSL guide at developer.nvidia.com/cuda-downloads
+        </div>
+        <p>Also ensure Python 3.10 is available:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>python3.10 --version
+<span class="comment"># If missing:</span>
+sudo apt install -y python3.10 python3.10-venv python3.10-dev</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="s2">
+      <div class="step-header" onclick="toggle('s2')">
+        <div class="step-num">2</div>
+        <div class="step-title">Install System Dependencies</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>Install git-lfs (required for demo data parquet files) and FFmpeg (required by torchcodec):</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>sudo apt-get update
+sudo apt-get install -y git git-lfs ffmpeg curl build-essential
+
+<span class="comment"># Activate git-lfs globally</span>
+git lfs install</pre>
+        </div>
+        <div class="alert alert-warn">
+          <strong>git-lfs must be installed BEFORE cloning.</strong>
+          If you clone first without it, the parquet files in demo_data will be missing or corrupted.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="s3">
+      <div class="step-header" onclick="toggle('s3')">
+        <div class="step-num">3</div>
+        <div class="step-title">Clone the Repository (with submodules)</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>Clone with <code style="font-family:monospace;color:var(--accent2)">--recurse-submodules</code> to pull all external dependencies in one shot:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>git clone --recurse-submodules https://github.com/NVIDIA/Isaac-GR00T
+cd Isaac-GR00T</pre>
+        </div>
+        <div class="alert alert-info">
+          <strong>Already cloned without submodules?</strong>
+          Run: <code style="font-family:monospace;font-size:12px;">git submodule update --init --recursive</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step" id="s4">
+      <div class="step-header" onclick="toggle('s4')">
+        <div class="step-num">4</div>
+        <div class="step-title">Install uv & Create the Environment</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>GR00T uses <strong>uv</strong> for fast, reproducible dependency management. Install it, then create the Python 3.10 environment:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre><span class="comment"># Install uv</span>
+curl -LsSf https://astral.sh/uv/install.sh | sh
+<span class="comment"># Reload shell so uv is on PATH</span>
+source $HOME/.local/bin/env
+
+<span class="comment"># From inside Isaac-GR00T/</span>
+uv sync --python 3.10</pre>
+        </div>
+        <p>This installs all dependencies including flash-attn, TensorRT, and GPU extras. It will take a few minutes on first run.</p>
+        <div class="alert alert-green">
+          <strong>Verify the install:</strong>
+          <code style="font-family:monospace;font-size:12px;">uv run python -c "import gr00t; print('GR00T installed successfully')"</code>
+        </div>
+        <div class="alert alert-info">
+          <strong>flash-attn re-validation message?</strong>
+          Normal behavior — uv re-validates the cached wheel on each run (takes ~2–3s). Not a rebuild.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step" id="s5">
+      <div class="step-header" onclick="toggle('s5')">
+        <div class="step-num">5</div>
+        <div class="step-title">Fix CUDA_HOME for Fine-tuning</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <div class="alert alert-danger">
+          <strong>Fine-tuning will fail with "CUDA_HOME is unset"</strong> unless you run this step.
+        </div>
+        <p>Run the provided dependency script to configure CUDA paths:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>uv run bash scripts/deployment/dgpu/install_deps.sh</pre>
+        </div>
+        <p>Or set it manually (add to your <code style="font-family:monospace;color:var(--accent2)">~/.bashrc</code> for persistence):</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>export CUDA_HOME=/usr/local/cuda
+echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
+source ~/.bashrc</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step" id="s6">
+      <div class="step-header" onclick="toggle('s6')">
+        <div class="step-num">6</div>
+        <div class="step-title">Patch Triton for RTX 5090 (Blackwell / sm_120)</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <div class="alert alert-danger">
+          <strong>Critical for RTX 5090 owners.</strong>
+          Triton 3.3.1 (pinned by PyTorch 2.7) does not recognize CUDA sm_120 (Blackwell). Without this patch you will hit a <code style="font-family:monospace;font-size:12px;">RuntimeError in ptx_get_version()</code> during training.
+        </div>
+        <p>Run the official patch script included in the repo:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>uv run bash scripts/patch_triton_cuda13.sh</pre>
+        </div>
+        <div class="alert alert-info">
+          <strong>Why "cuda13"?</strong>
+          The patch script is named for CUDA 13.x platforms (Thor, Spark) but resolves the same Triton sm_ version detection bug that affects sm_120 on CUDA 12.x too. Run it regardless.
+        </div>
+        <div class="alert alert-warn">
+          <strong>torch.compile caveat:</strong>
+          If Triton still fails after the patch, disable torch.compile and use PyTorch eager mode for fine-tuning. TensorRT inference remains fully supported on Blackwell.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step" id="s7">
+      <div class="step-header" onclick="toggle('s7')">
+        <div class="step-num">7</div>
+        <div class="step-title">Prepare Your Robot Data</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>GR00T expects data in the <strong>LeRobot v2 format</strong> with an additional <code style="font-family:monospace;color:var(--accent2)">meta/modality.json</code>. Your dataset folder structure should look like:</p>
+        <div class="code-block">
+          <div class="code-label"><span>Expected dataset layout</span></div>
+          <pre>my_robot_dataset/
+  meta/
+    info.json          <span class="comment"># dataset metadata</span>
+    episodes.jsonl     <span class="comment"># episode index + lengths</span>
+    tasks.jsonl        <span class="comment"># language task descriptions</span>
+    modality.json      <span class="comment"># state/action/video key mapping ← GR00T-specific</span>
+  data/chunk-000/      <span class="comment"># parquet files (state, action per timestep)</span>
+  videos/chunk-000/    <span class="comment"># mp4 video files per episode</span></pre>
+        </div>
+        <div class="alert alert-info">
+          <strong>Coming from LeRobot v3?</strong>
+          Run the conversion script: <code style="font-family:monospace;font-size:12px;">python scripts/lerobot_conversion/convert_v3_to_v2.py</code>
+        </div>
+        <p>Use the included SO100 demo as a reference for your own modality config:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre><span class="comment"># Look at the example config structure</span>
+cat examples/SO100/so100_config.py
+
+<span class="comment"># Browse the 5-episode demo dataset</span>
+ls demo_data/cube_to_bowl_5/</pre>
+        </div>
+        <p>See <code style="font-family:monospace;color:var(--accent2)">getting_started/finetune_new_embodiment.md</code> for the full data prep walkthrough, including how to configure relative EEF action space for your robot.</p>
+      </div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step" id="s8">
+      <div class="step-header" onclick="toggle('s8')">
+        <div class="step-num">8</div>
+        <div class="step-title">Run Your First Fine-tune</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>Single GPU fine-tune (your RTX 5090 has 32GB VRAM — meets the 40GB+ recommendation with some care; reduce batch size if you hit OOM):</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash — single GPU (RTX 5090)</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>CUDA_VISIBLE_DEVICES=0 uv run python \
+    gr00t/experiment/launch_finetune.py \
+    <span class="flag">--base-model-path</span> nvidia/GR00T-N1.7-3B \
+    <span class="flag">--dataset-path</span>    <span class="str">demo_data/cube_to_bowl_5</span> \
+    <span class="flag">--embodiment-tag</span>  NEW_EMBODIMENT \
+    <span class="flag">--modality-config-path</span> examples/SO100/so100_config.py \
+    <span class="flag">--num-gpus</span>        1 \
+    <span class="flag">--output-dir</span>      /tmp/test_finetune \
+    <span class="flag">--max-steps</span>       2000 \
+    <span class="flag">--global-batch-size</span> 32 \
+    <span class="flag">--dataloader-num-workers</span> 4</pre>
+        </div>
+        <div class="alert alert-warn">
+          <strong>OOM on 32GB VRAM?</strong>
+          Lower <code style="font-family:monospace;font-size:12px;">--global-batch-size</code> to 16 or 8. The 40GB+ recommendation is for batch-32; smaller batches work fine with more steps.
+        </div>
+        <div class="alert alert-green">
+          <strong>Using your own robot data?</strong>
+          Replace <code style="font-family:monospace;font-size:12px;">demo_data/cube_to_bowl_5</code> with your dataset path and <code style="font-family:monospace;font-size:12px;">examples/SO100/so100_config.py</code> with your own modality config.
+        </div>
+        <p>Add <code style="font-family:monospace;color:var(--accent2)">--use-wandb</code> to enable Weights &amp; Biases logging.</p>
+      </div>
+    </div>
+
+    <!-- STEP 9 -->
+    <div class="step" id="s9">
+      <div class="step-header" onclick="toggle('s9')">
+        <div class="step-num">9</div>
+        <div class="step-title">Verify with Open-Loop Evaluation</div>
+        <div class="step-arrow">▶</div>
+      </div>
+      <div class="step-body">
+        <p>After training, validate your checkpoint against ground truth from your dataset:</p>
+        <div class="code-block">
+          <div class="code-label"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>uv run python gr00t/eval/open_loop_eval.py \
+    <span class="flag">--dataset-path</span>  &lt;YOUR_DATASET_PATH&gt; \
+    <span class="flag">--embodiment-tag</span> NEW_EMBODIMENT \
+    <span class="flag">--model-path</span>    /tmp/test_finetune \
+    <span class="flag">--traj-ids</span> 0 1 \
+    <span class="flag">--action-horizon</span> 16</pre>
+        </div>
+        <p>This saves a visualization JPEG to <code style="font-family:monospace;color:var(--accent2)">/tmp/open_loop_eval/traj_0.jpeg</code> showing ground truth vs. predicted actions with MSE metrics. Use <code style="font-family:monospace;color:var(--accent2)">--save-plot-path &lt;dir&gt;</code> to change output location.</p>
+        <div class="alert alert-info">
+          <strong>Expect 5–6% variance between runs</strong> due to non-deterministic image augmentations — this is normal and documented in the training tips.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <div class="section-label">Quick Reference — Key Files</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+    <table>
+      <tr><th>File / Path</th><th>Purpose</th></tr>
+      <tr><td><code>gr00t/experiment/launch_finetune.py</code></td><td>Main fine-tuning entry point</td></tr>
+      <tr><td><code>examples/SO100/so100_config.py</code></td><td>Example modality config for custom embodiment</td></tr>
+      <tr><td><code>getting_started/finetune_new_embodiment.md</code></td><td>Full new-embodiment tutorial</td></tr>
+      <tr><td><code>scripts/patch_triton_cuda13.sh</code></td><td>Triton sm_ version patch (required for RTX 5090)</td></tr>
+      <tr><td><code>scripts/deployment/dgpu/install_deps.sh</code></td><td>Configures CUDA_HOME and GPU deps</td></tr>
+      <tr><td><code>gr00t/eval/open_loop_eval.py</code></td><td>Checkpoint validation tool</td></tr>
+      <tr><td><code>demo_data/cube_to_bowl_5/</code></td><td>5-episode SO100 demo dataset for testing</td></tr>
+      <tr><td><code>gr00t/configs/finetune_config.py</code></td><td>Training hyperparameters &amp; state_dropout_prob</td></tr>
+    </table>
+  </div>
+
+  <div class="section-label" style="margin-top:28px;">Training Tips for RTX 5090</div>
+  <div class="checklist" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;">
+    <div class="check-item"><span class="check-icon">→</span><span>Start with <code style="font-family:monospace;color:var(--accent2);font-size:12px;">--global-batch-size 16</code> and scale up if VRAM allows — 32GB is slightly below the 40GB recommendation but workable</span></div>
+    <div class="check-item"><span class="check-icon">→</span><span>Train for 2,000–5,000 steps for new embodiments; check open-loop eval MSE to judge convergence</span></div>
+    <div class="check-item"><span class="check-icon">→</span><span><code style="font-family:monospace;color:var(--accent2);font-size:12px;">--state_dropout_prob</code> defaults to 0.2 in the fine-tune CLI. Lower it if your task relies heavily on proprioceptive state</span></div>
+    <div class="check-item"><span class="check-icon">→</span><span>The new relative EEF action space in N1.7 means you should configure your robot's actions as deltas from current pose for best cross-embodiment transfer</span></div>
+    <div class="check-item"><span class="check-icon">→</span><span>If <code style="font-family:monospace;color:var(--accent2);font-size:12px;">torch.compile</code> still fails after the Triton patch, add <code style="font-family:monospace;color:var(--accent2);font-size:12px;">--no-compile</code> flag or set <code style="font-family:monospace;color:var(--accent2);font-size:12px;">TORCH_COMPILE=0</code></span></div>
+  </div>
+
+</div>
+
+<footer>
+  <div>GR00T N1.7 · Apache 2.0</div>
+  <div><a href="https://github.com/NVIDIA/Isaac-GR00T" target="_blank">github.com/NVIDIA/Isaac-GR00T</a></div>
+  <div><a href="https://developer.nvidia.com/isaac/gr00t" target="_blank">developer.nvidia.com/isaac/gr00t</a></div>
+  <div><a href="https://huggingface.co/nvidia/GR00T-N1.7-3B" target="_blank">HuggingFace: nvidia/GR00T-N1.7-3B</a></div>
+</footer>
+
+<script>
+  function toggle(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText.replace(/^#.*\n/gm, line => line); // keep comments
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'copied!';
+      btn.style.color = 'var(--accent)';
+      setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 1800);
+    });
+  }
+</script>
+</body>
+</html>
