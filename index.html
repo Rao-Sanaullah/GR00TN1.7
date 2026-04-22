@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GR00T N1.7 on WSL2 — Install Guide</title>
+<title>GR00T N1.7 — Install Guide</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -24,8 +24,9 @@
   --yellow-dim: rgba(255,209,102,0.08);
   --red: #ff4d6d;
   --red-dim: rgba(255,77,109,0.08);
+  --purple: #b48eff;
+  --purple-dim: rgba(180,142,255,0.08);
 
-  /* DARK: bright white text hierarchy */
   --text:  #ffffff;
   --text2: #c8d6f0;
   --text3: #7a90b8;
@@ -39,15 +40,13 @@
   --pre-color: #d8e8ff;
   --toc-item-color: #c8d6f0;
   --footer-color: #7a90b8;
-
   --hero-title-color: #ffffff;
   --hero-sub-color: #c8d6f0;
-
   --callout-warn-text: #ffd980;
   --callout-info-text: #7dd8ee;
   --callout-ok-text:   #7de8aa;
   --callout-err-text:  #ff8899;
-
+  --callout-purple-text: #c8aaff;
   --term-bg: #020508;
   --term-bar: #080f0a;
   --term-border: #0f1e14;
@@ -58,7 +57,6 @@
   --noise-opacity: 0.6;
 }
 
-/* ── LIGHT THEME ── */
 html.light {
   --bg: #f4f6fa;
   --bg2: #ebeef5;
@@ -75,13 +73,12 @@ html.light {
   --yellow-dim: rgba(160,96,0,0.08);
   --red: #cc2244;
   --red-dim: rgba(204,34,68,0.08);
-
-  /* LIGHT: bold black text hierarchy */
+  --purple: #6030cc;
+  --purple-dim: rgba(96,48,204,0.08);
   --text:  #0a0e18;
   --text2: #1a2340;
   --text3: #3a4a60;
   --text4: #8898b0;
-
   --sec-label-color: #000000;
   --step-title-color: #000000;
   --step-subtitle-color: #3a4a60;
@@ -90,15 +87,13 @@ html.light {
   --pre-color: #1a2340;
   --toc-item-color: #1a2340;
   --footer-color: #3a4a60;
-
   --hero-title-color: #000000;
   --hero-sub-color: #1a2340;
-
   --callout-warn-text: #7a4800;
   --callout-info-text: #004870;
   --callout-ok-text:   #005830;
   --callout-err-text:  #8a0020;
-
+  --callout-purple-text: #3a0088;
   --term-bg: #1a2330;
   --term-bar: #141c28;
   --term-border: #243040;
@@ -109,7 +104,6 @@ html.light {
   --noise-opacity: 0.15;
 }
 
-/* ── THEME TOGGLE ── */
 .theme-toggle {
   position: fixed;
   top: 18px; right: 22px;
@@ -153,6 +147,30 @@ body::before {
   opacity: var(--noise-opacity);
   transition: opacity 0.3s;
 }
+
+/* ── TAB SWITCHER ── */
+.tab-bar {
+  display: flex; gap: 0; margin-bottom: 36px;
+  border: 1px solid var(--border); border-radius: 7px; overflow: hidden;
+}
+.tab-btn {
+  flex: 1; padding: 13px 20px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--surface); color: var(--text3);
+  border: none; cursor: pointer;
+  border-right: 1px solid var(--border);
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.tab-btn:last-child { border-right: none; }
+.tab-btn:hover { background: var(--surface2); color: var(--text2); }
+.tab-btn.active { background: var(--green-dim); color: var(--green); border-bottom: 2px solid var(--green); }
+.tab-btn.active-docker { background: var(--purple-dim); color: var(--purple); border-bottom: 2px solid var(--purple); }
+.tab-icon { font-size: 16px; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeUp 0.25s ease both; }
 
 /* ── HERO ── */
 .hero {
@@ -217,15 +235,6 @@ html.light .eyebrow { border-color: rgba(10,158,80,0.3); }
   font-weight: 500;
 }
 
-.hero-credit {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px; color: var(--text4);
-  margin-top: 14px; letter-spacing: 0.08em;
-  animation: fadeUp 0.5s 0.2s ease both;
-}
-.hero-credit a { color: var(--green); text-decoration: none; font-weight: 600; }
-.hero-credit a:hover { text-decoration: underline; }
-
 .hero-badges {
   display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px;
   animation: fadeUp 0.5s 0.15s ease both;
@@ -237,9 +246,11 @@ html.light .eyebrow { border-color: rgba(10,158,80,0.3); }
 .hb-g { color: var(--green); border-color: rgba(57,255,143,0.3); background: var(--green-dim); }
 .hb-c { color: var(--cyan);  border-color: rgba(0,229,255,0.3);  background: var(--cyan-dim); }
 .hb-y { color: var(--yellow);border-color: rgba(255,209,102,0.3);background: var(--yellow-dim); }
+.hb-p { color: var(--purple);border-color: rgba(180,142,255,0.3);background: var(--purple-dim); }
 html.light .hb-g { border-color: rgba(10,158,80,0.4); }
 html.light .hb-c { border-color: rgba(0,112,170,0.4); }
 html.light .hb-y { border-color: rgba(160,96,0,0.4); }
+html.light .hb-p { border-color: rgba(96,48,204,0.4); }
 
 @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
@@ -260,10 +271,11 @@ html.light .hb-y { border-color: rgba(160,96,0,0.4); }
   border-radius: 0 5px 5px 0; font-size: 13.5px; line-height: 1.65; margin-bottom: 10px;
 }
 .callout b { display: block; margin-bottom: 3px; font-weight: 700; }
-.c-warn { border-color: var(--yellow); background: var(--yellow-dim); color: var(--callout-warn-text); }
-.c-info { border-color: var(--cyan);   background: var(--cyan-dim);   color: var(--callout-info-text); }
-.c-ok   { border-color: var(--green);  background: var(--green-dim);  color: var(--callout-ok-text); }
-.c-err  { border-color: var(--red);    background: var(--red-dim);    color: var(--callout-err-text); }
+.c-warn   { border-color: var(--yellow); background: var(--yellow-dim); color: var(--callout-warn-text); }
+.c-info   { border-color: var(--cyan);   background: var(--cyan-dim);   color: var(--callout-info-text); }
+.c-ok     { border-color: var(--green);  background: var(--green-dim);  color: var(--callout-ok-text); }
+.c-err    { border-color: var(--red);    background: var(--red-dim);    color: var(--callout-err-text); }
+.c-purple { border-color: var(--purple); background: var(--purple-dim); color: var(--callout-purple-text); }
 .callout code {
   font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
   background: rgba(128,128,128,0.12); padding: 1px 5px; border-radius: 3px;
@@ -277,7 +289,9 @@ html.light .hb-y { border-color: rgba(160,96,0,0.4); }
 }
 .step-card:hover { border-color: var(--border2); }
 .step-card.open  { border-color: rgba(57,255,143,0.3); }
+.step-card.open.docker-step { border-color: rgba(180,142,255,0.3); }
 html.light .step-card.open { border-color: rgba(10,158,80,0.4); }
+html.light .step-card.open.docker-step { border-color: rgba(96,48,204,0.4); }
 
 .step-head {
   display: grid; grid-template-columns: 48px 1fr auto;
@@ -296,17 +310,21 @@ html.light .step-card.open { border-color: rgba(10,158,80,0.4); }
 }
 .step-card.done .step-dot { background: var(--green); border-color: var(--green); box-shadow: 0 0 8px var(--green); }
 .step-card.open .step-dot { border-color: var(--green); background: var(--green-dim); }
+.step-card.docker-step.done .step-dot { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 8px var(--purple); }
+.step-card.docker-step.open .step-dot { border-color: var(--purple); background: var(--purple-dim); }
 
 .step-title-wrap { display: flex; flex-direction: column; gap: 3px; }
 .step-title { font-weight: 700; font-size: 14.5px; color: var(--step-title-color); }
 .step-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--step-subtitle-color); }
 .step-card.done .step-title { color: var(--step-done-title); font-weight: 700; }
+.step-card.docker-step.done .step-title { color: var(--purple); }
 
 .step-chevron {
   font-size: 11px; color: var(--text3);
   transition: transform 0.22s; font-family: 'IBM Plex Mono', monospace;
 }
 .step-card.open .step-chevron { transform: rotate(90deg); color: var(--green); }
+.step-card.docker-step.open .step-chevron { color: var(--purple); }
 
 .step-body {
   display: none; padding: 22px; flex-direction: column; gap: 16px;
@@ -326,6 +344,7 @@ p { color: var(--p-color); font-size: 14px; font-weight: 500; }
 }
 .cb-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text3); font-weight: 600; }
 .cb-label span { color: var(--cyan); margin-right: 6px; }
+.cb-label span.docker-icon { color: var(--purple); }
 .copy-btn {
   background: none; border: 1px solid var(--border2); color: var(--text3);
   font-family: 'IBM Plex Mono', monospace; font-size: 10px;
@@ -342,6 +361,7 @@ pre {
 .cm { color: var(--text4); }
 .fl { color: var(--cyan); }
 .st { color: var(--yellow); }
+.pu { color: var(--purple); }
 
 /* ── TERMINAL ── */
 .terminal { background: var(--term-bg); border: 1px solid var(--term-border); border-radius: 7px; overflow: hidden; transition: background 0.3s; }
@@ -376,6 +396,7 @@ pre {
 .checklist { display: flex; flex-direction: column; gap: 10px; }
 .ci { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--p-color); line-height: 1.6; font-weight: 500; }
 .ci-icon { font-family: 'IBM Plex Mono', monospace; color: var(--green); font-size: 13px; flex-shrink: 0; margin-top: 2px; font-weight: 700; }
+.ci-icon.pu { color: var(--purple); }
 .ci code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
 
 /* ── TOC ── */
@@ -389,7 +410,24 @@ pre {
   cursor: pointer; transition: all 0.15s; text-decoration: none; font-weight: 600;
 }
 .toc-item:hover { border-color: var(--green); color: var(--green); }
+.toc-item.docker-toc:hover { border-color: var(--purple); color: var(--purple); }
 .toc-num { color: var(--text4); margin-right: 5px; font-weight: 400; }
+
+/* ── DOCKER ARCH DIAGRAM ── */
+.arch-diagram {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 7px;
+  padding: 20px; display: flex; flex-direction: column; gap: 8px; align-items: center;
+}
+.arch-row { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.arch-box {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700;
+  padding: 8px 16px; border-radius: 4px; border: 1px solid; text-align: center;
+}
+.arch-green { color: var(--green); border-color: rgba(57,255,143,0.3); background: var(--green-dim); }
+.arch-purple { color: var(--purple); border-color: rgba(180,142,255,0.3); background: var(--purple-dim); }
+.arch-cyan { color: var(--cyan); border-color: rgba(0,229,255,0.3); background: var(--cyan-dim); }
+.arch-yellow { color: var(--yellow); border-color: rgba(255,209,102,0.3); background: var(--yellow-dim); }
+.arch-arrow { font-family: 'IBM Plex Mono', monospace; color: var(--text4); font-size: 13px; }
 
 /* ── FOOTER ── */
 footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
@@ -398,13 +436,13 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
 .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--footer-color); text-decoration: none; transition: color 0.15s; font-weight: 600; }
 .footer-links a:hover { color: var(--cyan); }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .hero { padding: 48px 0 36px; }
   .step-head { grid-template-columns: 36px 1fr auto; gap: 10px; padding: 14px 16px; }
   .step-body { padding: 16px; }
   pre { font-size: 11.5px; }
   .theme-toggle { top: 12px; right: 12px; padding: 5px 10px; }
+  .tab-btn { font-size: 10px; padding: 10px 12px; }
 }
 </style>
 </head>
@@ -422,17 +460,16 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
     <div class="eyebrow">Complete Install Guide</div>
     <h1 class="hero-title">
       <span class="accent">GR00T</span> N1.7
-      <span class="sub">on WSL2 Ubuntu 22.04</span>
+      <span class="sub">WSL2 · Linux · Docker</span>
     </h1>
     <p class="hero-desc">
-      A complete, battle-tested installation guide for NVIDIA Isaac GR00T N1.7 on Windows Subsystem for Linux. Covers fine-tuning setup with real fixes for RTX 5090 Blackwell hardware.
+      Battle-tested installation guides for NVIDIA Isaac GR00T N1.7. Choose your platform: WSL2 on Windows, or Docker on Linux. Both cover fine-tuning setup with real fixes for RTX 5090 Blackwell hardware.
     </p>
-    <p class="hero-credit" style="color:white;">Designed by <a href="https://github.com/Rao-Sanaullah" target="_blank">Sanaullah ↗</a></p>
     <div class="hero-badges">
       <span class="hbadge hb-g">GR00T N1.7</span>
-      <span class="hbadge hb-c">WSL2 · Ubuntu 22.04</span>
       <span class="hbadge hb-c">CUDA 12.8 · Python 3.10</span>
       <span class="hbadge hb-y">RTX 5090 · Blackwell sm_120</span>
+      <span class="hbadge hb-p">Docker · WSL2</span>
       <span class="hbadge hb-g">Fine-tuning</span>
     </div>
   </div>
@@ -441,52 +478,65 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
 <main class="page">
 <div class="wrap">
 
-  <div class="toc">
-    <div class="toc-title">Jump to step</div>
-    <div class="toc-list">
-      <a class="toc-item" onclick="openStep('s1')"><span class="toc-num">01</span>Verify CUDA</a>
-      <a class="toc-item" onclick="openStep('s2')"><span class="toc-num">02</span>System Deps</a>
-      <a class="toc-item" onclick="openStep('s3')"><span class="toc-num">03</span>Clone Repo</a>
-      <a class="toc-item" onclick="openStep('s4')"><span class="toc-num">04</span>Fix Permissions</a>
-      <a class="toc-item" onclick="openStep('s5')"><span class="toc-num">05</span>Install uv</a>
-      <a class="toc-item" onclick="openStep('s6')"><span class="toc-num">06</span>CUDA_HOME</a>
-      <a class="toc-item" onclick="openStep('s7')"><span class="toc-num">07</span>Triton Patch</a>
-      <a class="toc-item" onclick="openStep('s8')"><span class="toc-num">08</span>Verify</a>
-      <a class="toc-item" onclick="openStep('s9')"><span class="toc-num">09</span>Fine-tune</a>
-      <a class="toc-item" onclick="openStep('s10')"><span class="toc-num">10</span>Results ✓</a>
-    </div>
+  <!-- TAB SWITCHER -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-wsl" onclick="switchTab('wsl')">
+      <span class="tab-icon">🪟</span> WSL2 / Ubuntu
+    </button>
+    <button class="tab-btn" id="tab-docker" onclick="switchTab('docker')">
+      <span class="tab-icon">🐳</span> Docker / Linux
+    </button>
   </div>
 
-  <div class="sec-label">Before You Begin</div>
-  <div class="callout c-warn" style="margin-bottom:8px;">
-    <b>⚠ RTX 5090 (Blackwell / sm_120) — Triton Patch Required</b>
-    Triton 3.3.1 pinned by PyTorch 2.7 does NOT support sm_120. Fine-tuning will crash with <code>RuntimeError in ptx_get_version()</code> without Step 7.
-  </div>
-  <div class="callout c-info">
-    <b>CUDA Drivers on Windows</b>
-    WSL2 shares the Windows GPU driver automatically. Do NOT install a separate CUDA driver inside WSL — only the CUDA toolkit if <code>nvcc</code> is missing.
-  </div>
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- WSL2 TAB -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel active" id="panel-wsl">
 
-  <div class="divider"></div>
-
-  <div class="sec-label">Installation Steps</div>
-  <div class="steps">
-
-    <!-- S1 -->
-    <div class="step-card done" id="s1">
-      <div class="step-head" onclick="toggle('s1')">
-        <div class="step-num-wrap"><span class="step-num">01</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Verify CUDA & GPU Inside WSL2</span>
-          <span class="step-subtitle">nvidia-smi · nvcc · python3.10</span>
-        </div>
-        <span class="step-chevron">▶</span>
+    <div class="toc">
+      <div class="toc-title">Jump to step</div>
+      <div class="toc-list">
+        <a class="toc-item" onclick="openStep('s1')"><span class="toc-num">01</span>Verify CUDA</a>
+        <a class="toc-item" onclick="openStep('s2')"><span class="toc-num">02</span>System Deps</a>
+        <a class="toc-item" onclick="openStep('s3')"><span class="toc-num">03</span>Clone Repo</a>
+        <a class="toc-item" onclick="openStep('s4')"><span class="toc-num">04</span>Fix Permissions</a>
+        <a class="toc-item" onclick="openStep('s5')"><span class="toc-num">05</span>Install uv</a>
+        <a class="toc-item" onclick="openStep('s6')"><span class="toc-num">06</span>CUDA_HOME</a>
+        <a class="toc-item" onclick="openStep('s7')"><span class="toc-num">07</span>Triton Patch</a>
+        <a class="toc-item" onclick="openStep('s8')"><span class="toc-num">08</span>Verify</a>
+        <a class="toc-item" onclick="openStep('s9')"><span class="toc-num">09</span>Fine-tune</a>
+        <a class="toc-item" onclick="openStep('s10')"><span class="toc-num">10</span>Results ✓</a>
       </div>
-      <div class="step-body">
-        <p>Open your WSL2 terminal and confirm the GPU and CUDA toolkit are visible:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre><span class="cm"># Must show RTX 5090 + driver version</span>
+    </div>
+
+    <div class="sec-label">Before You Begin</div>
+    <div class="callout c-warn" style="margin-bottom:8px;">
+      <b>⚠ RTX 5090 (Blackwell / sm_120) — Triton Patch Required</b>
+      Triton 3.3.1 pinned by PyTorch 2.7 does NOT support sm_120. Fine-tuning will crash with <code>RuntimeError in ptx_get_version()</code> without Step 7.
+    </div>
+    <div class="callout c-info">
+      <b>CUDA Drivers on Windows</b>
+      WSL2 shares the Windows GPU driver automatically. Do NOT install a separate CUDA driver inside WSL — only the CUDA toolkit if <code>nvcc</code> is missing.
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-label">Installation Steps</div>
+    <div class="steps">
+
+      <div class="step-card done" id="s1">
+        <div class="step-head" onclick="toggle('s1')">
+          <div class="step-num-wrap"><span class="step-num">01</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Verify CUDA & GPU Inside WSL2</span>
+            <span class="step-subtitle">nvidia-smi · nvcc · python3.10</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <p>Open your WSL2 terminal and confirm the GPU and CUDA toolkit are visible:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Must show your GPU + driver version</span>
 nvidia-smi
 
 <span class="cm"># Should show: release 12.8</span>
@@ -494,265 +544,234 @@ nvcc --version
 
 <span class="cm"># Confirm Python 3.10</span>
 python3.10 --version</pre>
-        </div>
-        <div class="callout c-warn">
-          <b>nvcc not found?</b>
-          Install the CUDA toolkit: <code>sudo apt install -y nvidia-cuda-toolkit</code><br>
-          Or use NVIDIA's official installer at developer.nvidia.com/cuda-downloads (Linux → x86_64 → Ubuntu → 22.04 → WSL-Ubuntu).
-        </div>
-        <div class="callout c-warn">
-          <b>python3.10 not found?</b>
-          <code>sudo apt install -y python3.10 python3.10-venv python3.10-dev</code>
+          </div>
+          <div class="callout c-warn">
+            <b>nvcc not found?</b>
+            Install the CUDA toolkit: <code>sudo apt install -y nvidia-cuda-toolkit</code><br>
+            Or use NVIDIA's official installer at developer.nvidia.com/cuda-downloads (Linux → x86_64 → Ubuntu → 22.04 → WSL-Ubuntu).
+          </div>
+          <div class="callout c-warn">
+            <b>python3.10 not found?</b>
+            <code>sudo apt install -y python3.10 python3.10-venv python3.10-dev</code>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- S2 -->
-    <div class="step-card done" id="s2">
-      <div class="step-head" onclick="toggle('s2')">
-        <div class="step-num-wrap"><span class="step-num">02</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Install System Dependencies</span>
-          <span class="step-subtitle">git-lfs · ffmpeg · build-essential</span>
+      <div class="step-card done" id="s2">
+        <div class="step-head" onclick="toggle('s2')">
+          <div class="step-num-wrap"><span class="step-num">02</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Install System Dependencies</span>
+            <span class="step-subtitle">git-lfs · ffmpeg · build-essential</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="callout c-err">
-          <b>Install git-lfs BEFORE cloning.</b>
-          Skipping this causes parquet files in <code>demo_data/</code> to arrive as corrupted LFS pointer stubs instead of actual data.
-        </div>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>sudo apt-get update
+        <div class="step-body">
+          <div class="callout c-err">
+            <b>Install git-lfs BEFORE cloning.</b>
+            Skipping this causes parquet files in <code>demo_data/</code> to arrive as corrupted LFS pointer stubs instead of actual data.
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>sudo apt-get update
 sudo apt-get install -y git git-lfs ffmpeg curl build-essential
 
 <span class="cm"># Activate LFS hooks globally</span>
 git lfs install</pre>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- S3 -->
-    <div class="step-card done" id="s3">
-      <div class="step-head" onclick="toggle('s3')">
-        <div class="step-num-wrap"><span class="step-num">03</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Clone the Repository</span>
-          <span class="step-subtitle">--recurse-submodules</span>
+      <div class="step-card done" id="s3">
+        <div class="step-head" onclick="toggle('s3')">
+          <div class="step-num-wrap"><span class="step-num">03</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Clone the Repository</span>
+            <span class="step-subtitle">--recurse-submodules</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <p>GR00T uses git submodules for external dependencies. The <code style="font-family:monospace;color:var(--cyan);font-size:12px;font-weight:600;">--recurse-submodules</code> flag fetches everything in one shot:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>git clone --recurse-submodules https://github.com/NVIDIA/Isaac-GR00T
+        <div class="step-body">
+          <p>GR00T uses git submodules for external dependencies. The <code style="font-family:monospace;color:var(--cyan);font-size:12px;font-weight:600;">--recurse-submodules</code> flag fetches everything in one shot:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>git clone --recurse-submodules https://github.com/NVIDIA/Isaac-GR00T
 cd Isaac-GR00T</pre>
-        </div>
-        <div class="callout c-info">
-          <b>Already cloned without submodules?</b>
-          <code>git submodule update --init --recursive</code>
+          </div>
+          <div class="callout c-info">
+            <b>Already cloned without submodules?</b>
+            <code>git submodule update --init --recursive</code>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- S4 -->
-    <div class="step-card done" id="s4">
-      <div class="step-head" onclick="toggle('s4')">
-        <div class="step-num-wrap"><span class="step-num">04</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Fix Directory Permissions</span>
-          <span class="step-subtitle">⚠ Common issue — root-owned clone</span>
+      <div class="step-card done" id="s4">
+        <div class="step-head" onclick="toggle('s4')">
+          <div class="step-num-wrap"><span class="step-num">04</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Fix Directory Permissions</span>
+            <span class="step-subtitle">⚠ Common issue — root-owned clone</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="callout c-err">
-          <b>If cloned as root, uv fails immediately with:</b>
-          <code>error: failed to create directory .venv: Permission denied (os error 13)</code>
-        </div>
-        <p>Check ownership and fix if needed:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre><span class="cm"># Check who owns the directory</span>
+        <div class="step-body">
+          <div class="callout c-err">
+            <b>If cloned as root, uv fails immediately with:</b>
+            <code>error: failed to create directory .venv: Permission denied (os error 13)</code>
+          </div>
+          <p>Check ownership and fix if needed:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Check who owns the directory</span>
 ls -la ..
 
 <span class="cm"># If owned by root, take ownership</span>
 sudo chown -R $USER:$USER .</pre>
-        </div>
-        <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">what to look for</span></div>
-          <div class="term-body">
-            <span class="t-out"><span class="t-err">drwxr-xr-x  root  root</span>  Isaac-GR00T   ← needs fixing</span><br>
-            <span class="t-out"><span class="t-ok">drwxr-xr-x  user  user</span>  Isaac-GR00T   ← correct</span>
+          </div>
+          <div class="terminal">
+            <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">what to look for</span></div>
+            <div class="term-body">
+              <span class="t-out"><span class="t-err">drwxr-xr-x  root  root</span>  Isaac-GR00T   ← needs fixing</span><br>
+              <span class="t-out"><span class="t-ok">drwxr-xr-x  user  user</span>  Isaac-GR00T   ← correct</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- S5 -->
-    <div class="step-card done" id="s5">
-      <div class="step-head" onclick="toggle('s5')">
-        <div class="step-num-wrap"><span class="step-num">05</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Install uv and Sync Environment</span>
-          <span class="step-subtitle">137 packages · ~19 min on first run</span>
+      <div class="step-card done" id="s5">
+        <div class="step-head" onclick="toggle('s5')">
+          <div class="step-num-wrap"><span class="step-num">05</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Install uv and Sync Environment</span>
+            <span class="step-subtitle">137 packages · ~19 min on first run</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <p>GR00T uses <strong>uv</strong> for fast, reproducible dependency management:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash — from inside Isaac-GR00T/</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre><span class="cm"># Install uv</span>
+        <div class="step-body">
+          <p>GR00T uses <strong>uv</strong> for fast, reproducible dependency management:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash — from inside Isaac-GR00T/</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Install uv</span>
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source $HOME/.local/bin/env
 
 <span class="cm"># Create venv and install all dependencies</span>
 uv sync --python 3.10</pre>
-        </div>
-        <div class="callout c-info">
-          <b>What gets installed:</b>
-          torch 2.7.1+cu128, flash-attn 2.7.4, TensorRT 10.15, deepspeed, transformers, torchcodec, and 130+ more packages. First run takes ~19 minutes.
-        </div>
-        <div class="callout c-warn">
-          <b>flash-attn re-validation on every uv run?</b>
-          Normal — uv re-checks the cached wheel URL each time (~2–3s). It is not rebuilding from source.
-        </div>
-        <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
-          <div class="term-body">
-            <span><span class="t-prompt">$ </span><span class="t-cmd">uv sync --python 3.10</span></span><br>
-            <span class="t-out">Resolved 180 packages in 39.67s</span><br>
-            <span class="t-out">  Built gr00t @ file:///...</span><br>
-            <span class="t-out">  Built tensorrt-cu12==10.15.1.29</span><br>
-            <span class="t-out">  Built deepspeed==0.17.6</span><br>
-            <span class="t-out">Prepared 136 packages in 18m 43s</span><br>
-            <span class="t-ok">Installed 137 packages in 471ms</span>
+          </div>
+          <div class="callout c-info">
+            <b>What gets installed:</b>
+            torch 2.7.1+cu128, flash-attn 2.7.4, TensorRT 10.15, deepspeed, transformers, torchcodec, and 130+ more packages. First run takes ~19 minutes.
+          </div>
+          <div class="callout c-warn">
+            <b>flash-attn re-validation on every uv run?</b>
+            Normal — uv re-checks the cached wheel URL each time (~2–3s). It is not rebuilding from source.
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- S6 -->
-    <div class="step-card done" id="s6">
-      <div class="step-head" onclick="toggle('s6')">
-        <div class="step-num-wrap"><span class="step-num">06</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Set CUDA_HOME</span>
-          <span class="step-subtitle">Required for fine-tuning · deepspeed compilation</span>
+      <div class="step-card done" id="s6">
+        <div class="step-head" onclick="toggle('s6')">
+          <div class="step-num-wrap"><span class="step-num">06</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Set CUDA_HOME</span>
+            <span class="step-subtitle">Required for fine-tuning · deepspeed compilation</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="callout c-err">
-          <b>Fine-tuning will fail with:</b>
-          <code>CUDA_HOME is unset</code> — deepspeed needs this to compile CUDA extensions at runtime.
-        </div>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>export CUDA_HOME=/usr/local/cuda
+        <div class="step-body">
+          <div class="callout c-err">
+            <b>Fine-tuning will fail with:</b>
+            <code>CUDA_HOME is unset</code> — deepspeed needs this to compile CUDA extensions at runtime.
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>export CUDA_HOME=/usr/local/cuda
 echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
 source ~/.bashrc</pre>
-        </div>
-        <div class="callout c-info">
-          <b>Alternatively</b>, run the provided script: <code>uv run bash scripts/deployment/dgpu/install_deps.sh</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- S7 -->
-    <div class="step-card done" id="s7">
-      <div class="step-head" onclick="toggle('s7')">
-        <div class="step-num-wrap"><span class="step-num">07</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Patch Triton for RTX 5090 (Blackwell)</span>
-          <span class="step-subtitle">⚠ Critical — sm_120 not supported by Triton 3.3.1</span>
-        </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="callout c-err">
-          <b>Without this patch, fine-tuning crashes with:</b>
-          <code>RuntimeError in Triton's ptx_get_version()</code><br>
-          Triton 3.3.1 (pinned by PyTorch 2.7) does not recognise Blackwell GPU architecture sm_120.
-        </div>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>uv run bash scripts/patch_triton_cuda13.sh</pre>
-        </div>
-        <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
-          <div class="term-body">
-            <span><span class="t-prompt">$ </span><span class="t-cmd">uv run bash scripts/patch_triton_cuda13.sh</span></span><br>
-            <span class="t-out">Uninstalled 1 package in 2ms · Installed 1 package in 8ms</span><br>
-            <span class="t-ok">Patched .../triton/backends/nvidia/compiler.py to support CUDA 13.x</span><br>
-            <span class="t-ok">Installed triton_cuda13_patch.pth (runtime monkey-patch, survives uv reinstalls)</span>
+          </div>
+          <div class="callout c-info">
+            <b>Alternatively</b>, run the provided script: <code>uv run bash scripts/deployment/dgpu/install_deps.sh</code>
           </div>
         </div>
-        <div class="callout c-info">
-          <b>Why "cuda13"?</b>
-          Named for Thor/Spark CUDA 13.x platforms but fixes the same sm_ version detection bug affecting sm_120 on CUDA 12.8.
-        </div>
-        <div class="callout c-warn">
-          <b>Still hitting torch.compile errors after the patch?</b>
-          Set <code>TORCH_COMPILE=0</code> in your environment.
-        </div>
       </div>
-    </div>
 
-    <!-- S8 -->
-    <div class="step-card done" id="s8">
-      <div class="step-head" onclick="toggle('s8')">
-        <div class="step-num-wrap"><span class="step-num">08</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Verify Installation</span>
-          <span class="step-subtitle">import gr00t · smoke test</span>
+      <div class="step-card done" id="s7">
+        <div class="step-head" onclick="toggle('s7')">
+          <div class="step-num-wrap"><span class="step-num">07</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Patch Triton for RTX 5090 (Blackwell)</span>
+            <span class="step-subtitle">⚠ Critical — sm_120 not supported by Triton 3.3.1</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>uv run python -c "import gr00t; print('GR00T installed successfully')"</pre>
-        </div>
-        <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
-          <div class="term-body">
-            <span><span class="t-prompt">$ </span><span class="t-cmd">uv run python -c "import gr00t; print('GR00T installed successfully')"</span></span><br>
-            <span class="t-ok">GR00T installed successfully</span>
+        <div class="step-body">
+          <div class="callout c-err">
+            <b>Without this patch, fine-tuning crashes with:</b>
+            <code>RuntimeError in Triton's ptx_get_version()</code><br>
+            Triton 3.3.1 (pinned by PyTorch 2.7) does not recognise Blackwell GPU architecture sm_120.
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>uv run bash scripts/patch_triton_cuda13.sh</pre>
+          </div>
+          <div class="terminal">
+            <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
+            <div class="term-body">
+              <span><span class="t-prompt">$ </span><span class="t-cmd">uv run bash scripts/patch_triton_cuda13.sh</span></span><br>
+              <span class="t-out">Uninstalled 1 package in 2ms · Installed 1 package in 8ms</span><br>
+              <span class="t-ok">Patched .../triton/backends/nvidia/compiler.py to support CUDA 13.x</span><br>
+              <span class="t-ok">Installed triton_cuda13_patch.pth (runtime monkey-patch, survives uv reinstalls)</span>
+            </div>
+          </div>
+          <div class="callout c-warn">
+            <b>Still hitting torch.compile errors after the patch?</b>
+            Set <code>TORCH_COMPILE=0</code> in your environment.
           </div>
         </div>
-        <p>Optionally run zero-shot inference on the included demo dataset (downloads ~6GB base model from HuggingFace on first run):</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>uv run python scripts/deployment/standalone_inference_script.py \
+      </div>
+
+      <div class="step-card done" id="s8">
+        <div class="step-head" onclick="toggle('s8')">
+          <div class="step-num-wrap"><span class="step-num">08</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Verify Installation</span>
+            <span class="step-subtitle">import gr00t · smoke test</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>uv run python -c "import gr00t; print('GR00T installed successfully')"</pre>
+          </div>
+          <p>Optionally run zero-shot inference on the included demo dataset (downloads ~6GB base model on first run):</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>uv run python scripts/deployment/standalone_inference_script.py \
     <span class="fl">--model-path</span>      nvidia/GR00T-N1.7-3B \
     <span class="fl">--dataset-path</span>    demo_data/droid_sample \
     <span class="fl">--embodiment-tag</span>  OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT \
     <span class="fl">--traj-ids</span> 1 2 \
     <span class="fl">--inference-mode</span>  pytorch \
     <span class="fl">--action-horizon</span>  8</pre>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- S9 -->
-    <div class="step-card" id="s9">
-      <div class="step-head" onclick="toggle('s9')">
-        <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Run Fine-tuning on Your Robot Data</span>
-          <span class="step-subtitle">NEW_EMBODIMENT · single GPU</span>
+      <div class="step-card" id="s9">
+        <div class="step-head" onclick="toggle('s9')">
+          <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Run Fine-tuning on Your Robot Data</span>
+            <span class="step-subtitle">NEW_EMBODIMENT · single GPU</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <p>Replace dataset path and modality config with your own. Demo below uses the included SO100 5-episode dataset as a smoke test:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash — single GPU</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>CUDA_VISIBLE_DEVICES=0 uv run python \
+        <div class="step-body">
+          <p>Replace dataset path and modality config with your own. Demo below uses the included SO100 5-episode dataset as a smoke test:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash — single GPU</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>CUDA_VISIBLE_DEVICES=0 uv run python \
     gr00t/experiment/launch_finetune.py \
     <span class="fl">--base-model-path</span>      nvidia/GR00T-N1.7-3B \
     <span class="fl">--dataset-path</span>         <span class="st">demo_data/cube_to_bowl_5</span> \
@@ -760,183 +779,579 @@ source ~/.bashrc</pre>
     <span class="fl">--modality-config-path</span> examples/SO100/so100_config.py \
     <span class="fl">--num-gpus</span>             1 \
     <span class="fl">--output-dir</span>           /tmp/test_finetune \
-    <span class="fl">--max-steps</span>            2000 \
-    <span class="fl">--global-batch-size</span>    16 \
-    <span class="fl">--dataloader-num-workers</span> 4</pre>
+    <span class="fl">--max-steps</span>            5000 \
+    <span class="fl">--global-batch-size</span>    8 \
+    <span class="fl">--gradient-accumulation-steps</span> 4 \
+    <span class="fl">--num-shards-per-epoch</span> 10 \
+    <span class="fl">--save-only-model</span> \
+    <span class="fl">--dataloader-num-workers</span> 2</pre>
+          </div>
+          <div class="callout c-warn">
+            <b>OOM on 32GB VRAM?</b>
+            Use <code>--global-batch-size 4 --gradient-accumulation-steps 8</code>. Install bitsandbytes for 8-bit Adam: <code>pip install bitsandbytes</code>
+          </div>
+          <div class="callout c-ok">
+            <b>Using your own robot data?</b>
+            Replace the dataset path with your dataset and provide your own modality config via <code>--modality-config-path</code>. See <code>getting_started/finetune_new_embodiment.md</code> for the full data format spec.
+          </div>
         </div>
-        <div class="callout c-warn">
-          <b>OOM on 32GB VRAM?</b>
-          Start with <code>--global-batch-size 8</code> or <code>16</code>. The 40GB+ recommendation is for batch-32; smaller batches work fine with more steps.
+      </div>
+
+      <div class="step-card done" id="s10">
+        <div class="step-head" onclick="toggle('s10')">
+          <div class="step-num-wrap"><span class="step-num">10</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Zero-Shot Inference Results</span>
+            <span class="step-subtitle">RTX 5090 · DROID demo · 2 trajectories</span>
+          </div>
+          <span class="step-chevron">▶</span>
         </div>
-        <div class="callout c-ok">
-          <b>Using your own robot data?</b>
-          Replace <code>demo_data/cube_to_bowl_5</code> with your dataset path and <code>examples/SO100/so100_config.py</code> with your modality config.
-          See <code>getting_started/finetune_new_embodiment.md</code> in the official repo for the full data format spec.
+        <div class="step-body">
+          <div class="callout c-ok">
+            <b>✓ Zero-shot inference working on RTX 5090 — no fine-tuning required for these results.</b>
+            Base model nvidia/GR00T-N1.7-3B evaluated on the included DROID demo dataset, 2 trajectories, 200 steps each.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 1</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MSE</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:700;">0.0033</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MAE</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:700;">0.0376</span>
+                </div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);margin-top:4px;">266 timesteps · 25 inference steps</div>
+              </div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 2</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MSE</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:700;">0.0369</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MAE</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:700;">0.1168</span>
+                </div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);margin-top:4px;">411 timesteps · 25 inference steps</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid rgba(57,255,143,0.2);border-radius:6px;padding:14px 18px;display:flex;gap:32px;flex-wrap:wrap;">
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MSE</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:700;">0.0201</div>
+            </div>
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MAE</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:700;">0.0772</div>
+            </div>
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg Step Time</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;">169ms</div>
+            </div>
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Control Rate</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;">~5.9 Hz</div>
+            </div>
+          </div>
         </div>
-        <p>Validate with open-loop evaluation after training:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>uv run python gr00t/eval/open_loop_eval.py \
-    <span class="fl">--dataset-path</span>   &lt;YOUR_DATASET&gt; \
+      </div>
+
+    </div><!-- /wsl steps -->
+
+    <div class="divider"></div>
+    <div class="sec-label">Key Files Reference</div>
+    <table class="ref-table">
+      <tr><th>Path</th><th>Purpose</th></tr>
+      <tr><td><code>gr00t/experiment/launch_finetune.py</code></td><td>Main fine-tuning entry point</td></tr>
+      <tr><td><code>examples/SO100/so100_config.py</code></td><td>Example modality config for a custom embodiment</td></tr>
+      <tr><td><code>getting_started/finetune_new_embodiment.md</code></td><td>Full new-embodiment data prep tutorial</td></tr>
+      <tr><td><code>scripts/patch_triton_cuda13.sh</code></td><td>Triton sm_ version patch — required for RTX 5090</td></tr>
+      <tr><td><code>scripts/deployment/dgpu/install_deps.sh</code></td><td>Sets CUDA_HOME and GPU deps</td></tr>
+      <tr><td><code>gr00t/eval/open_loop_eval.py</code></td><td>Checkpoint validation</td></tr>
+      <tr><td><code>demo_data/cube_to_bowl_5/</code></td><td>5-episode SO100 demo dataset</td></tr>
+      <tr><td><code>gr00t/configs/finetune_config.py</code></td><td>Hyperparameters &amp; state_dropout_prob</td></tr>
+    </table>
+
+    <div class="divider"></div>
+    <div class="sec-label">Fine-tuning Tips for RTX 5090</div>
+    <div class="checklist" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:20px 22px;">
+      <div class="ci"><span class="ci-icon">→</span><span>Start with <code>--global-batch-size 8</code> with <code>--gradient-accumulation-steps 4</code> — effective batch 32, safe on 32GB VRAM</span></div>
+      <div class="ci"><span class="ci-icon">→</span><span>Use <code>--num-shards-per-epoch 10</code> and <code>--save-only-model</code> if hitting OOM — these are the key memory flags available in the launcher</span></div>
+      <div class="ci"><span class="ci-icon">→</span><span>Train 2,000–5,000 steps for new embodiments; monitor open-loop eval MSE to judge convergence</span></div>
+      <div class="ci"><span class="ci-icon">→</span><span><code>--state_dropout_prob</code> defaults to 0.2; lower it if your task depends heavily on proprioceptive state</span></div>
+      <div class="ci"><span class="ci-icon">→</span><span>Add <code>--use-wandb</code> to enable Weights &amp; Biases logging during training</span></div>
+      <div class="ci"><span class="ci-icon">→</span><span>If <code>torch.compile</code> still fails post-patch, set <code>PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True</code> before running</span></div>
+    </div>
+
+  </div><!-- /panel-wsl -->
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- DOCKER TAB -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-docker">
+
+    <div class="toc">
+      <div class="toc-title">Jump to step</div>
+      <div class="toc-list">
+        <a class="toc-item docker-toc" onclick="openDockerStep('d1')"><span class="toc-num">01</span>Prerequisites</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d2')"><span class="toc-num">02</span>Enable BuildKit</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d3')"><span class="toc-num">03</span>Clone Repo</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d4')"><span class="toc-num">04</span>Build Image</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d5')"><span class="toc-num">05</span>Run Container</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d6')"><span class="toc-num">06</span>Activate venv</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d7')"><span class="toc-num">07</span>Verify</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d8')"><span class="toc-num">08</span>Inference</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d9')"><span class="toc-num">09</span>Fine-tune</a>
+        <a class="toc-item docker-toc" onclick="openDockerStep('d10')"><span class="toc-num">10</span>Backup Images</a>
+      </div>
+    </div>
+
+    <div class="sec-label">Architecture Overview</div>
+    <div class="arch-diagram" style="margin-bottom:24px;">
+      <div class="arch-row">
+        <div class="arch-box arch-purple">Host Linux Machine<br><span style="font-size:9px;font-weight:400;">GPU driver · Docker</span></div>
+      </div>
+      <div class="arch-arrow">↓ --gpus all</div>
+      <div class="arch-row">
+        <div class="arch-box arch-green">grootn17 container<br><span style="font-size:9px;font-weight:400;">GR00T N1.7 · /workspace/.venv · port 5555</span></div>
+        <div class="arch-arrow">←→</div>
+        <div class="arch-box arch-cyan">robotics container<br><span style="font-size:9px;font-weight:400;">IsaacLab · ZMQ client · port 5556</span></div>
+      </div>
+      <div class="arch-arrow">↑ -v host_path:/data</div>
+      <div class="arch-row">
+        <div class="arch-box arch-yellow">Host filesystem<br><span style="font-size:9px;font-weight:400;">repo · datasets · checkpoints</span></div>
+      </div>
+    </div>
+
+    <div class="callout c-purple" style="margin-bottom:8px;">
+      <b>🐳 Key Design Principle</b>
+      Mount your repo and data from the host using <code>-v</code>. The Docker image contains only the installed Python environment — all code, datasets, and checkpoints stay on your host disk and survive container restarts.
+    </div>
+    <div class="callout c-warn">
+      <b>⚠ Volume Mount Caveat</b>
+      The GR00T Dockerfile installs everything into <code>/workspace/.venv</code> inside the image. If you mount a volume over <code>/workspace</code>, the venv gets hidden. Mount your repo to <code>/data</code> instead and the venv stays intact.
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-label">Docker Installation Steps</div>
+    <div class="steps">
+
+      <div class="step-card docker-step done" id="d1">
+        <div class="step-head" onclick="toggle('d1')">
+          <div class="step-num-wrap"><span class="step-num">01</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Install Docker & NVIDIA Container Toolkit</span>
+            <span class="step-subtitle">nvidia-container-toolkit · GPU passthrough</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — host</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Install Docker</span>
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+newgrp docker
+
+<span class="cm"># Install NVIDIA Container Toolkit</span>
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | \
+  sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+<span class="cm"># Verify GPU is visible to Docker</span>
+docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi</pre>
+          </div>
+          <div class="callout c-info">
+            <b>Also install git-lfs on the host</b> before cloning — required for demo parquet files:<br>
+            <code>sudo apt install -y git-lfs && git lfs install</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d2">
+        <div class="step-head" onclick="toggle('d2')">
+          <div class="step-num-wrap"><span class="step-num">02</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Enable Docker BuildKit</span>
+            <span class="step-subtitle">Required for --mount=type=cache in Dockerfile</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="callout c-err">
+            <b>Without BuildKit, the build fails with:</b>
+            <code>the --mount option requires BuildKit</code>
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — host</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Install buildx plugin</span>
+mkdir -p ~/.docker/cli-plugins
+curl -SL https://github.com/docker/buildx/releases/download/v0.17.1/buildx-v0.17.1.linux-amd64 \
+  -o ~/.docker/cli-plugins/docker-buildx
+chmod +x ~/.docker/cli-plugins/docker-buildx
+
+<span class="cm"># Enable BuildKit permanently</span>
+mkdir -p ~/.docker
+cat > ~/.docker/config.json &lt;&lt;'EOF'
+{
+  "features": {
+    "buildkit": "true"
+  }
+}
+EOF
+
+<span class="cm"># Verify</span>
+docker buildx version</pre>
+          </div>
+          <div class="callout c-info">
+            <b>Quick one-shot alternative</b> — prefix any build with:<br>
+            <code>DOCKER_BUILDKIT=1 docker build ...</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d3">
+        <div class="step-head" onclick="toggle('d3')">
+          <div class="step-num-wrap"><span class="step-num">03</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Clone the Repository</span>
+            <span class="step-subtitle">On host — mounted into container at /data</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <p>Clone on the host. The repo will be mounted into the container at <code>/data</code> so edits are live without rebuilding.</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash — host</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>git clone --recurse-submodules https://github.com/NVIDIA/Isaac-GR00T
+cd Isaac-GR00T</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d4">
+        <div class="step-head" onclick="toggle('d4')">
+          <div class="step-num-wrap"><span class="step-num">04</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Build the Docker Image</span>
+            <span class="step-subtitle">nvidia/cuda:12.8.0-devel · ~15–25 min</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <p>Run from the repo root. The existing <code>docker/Dockerfile</code> in the GR00T repo is used directly — no custom Dockerfile needed.</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — from Isaac-GR00T/ root</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>cd Isaac-GR00T
+
+DOCKER_BUILDKIT=1 docker build \
+  -f docker/Dockerfile \
+  -t grootn17:latest \
+  .</pre>
+          </div>
+          <div class="callout c-info">
+            <b>What the build does:</b>
+            Pulls <code>nvidia/cuda:12.8.0-devel-ubuntu22.04</code>, installs system deps (ffmpeg, git-lfs), installs uv, syncs all Python dependencies into <code>/workspace/.venv</code>, and installs the gr00t package itself. Takes 15–25 minutes on first run.
+          </div>
+          <div class="callout c-warn">
+            <b>RTX 5090 (sm_120) note:</b>
+            <code>torch.compile</code> via Triton will fail on Blackwell inside the container the same way as WSL2. Use <code>--inference-mode pytorch</code> for inference. Fine-tuning OOM can be managed with batch size and gradient accumulation flags.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d5">
+        <div class="step-head" onclick="toggle('d5')">
+          <div class="step-num-wrap"><span class="step-num">05</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Run the Container</span>
+            <span class="step-subtitle">--gpus all · mount repo at /data · port 5555</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — host</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>docker run -it --gpus all \
+  --ipc=host \
+  --shm-size=16g \
+  -v /path/to/Isaac-GR00T:/data \
+  -v /path/to/your-datasets:/workspace/datasets \
+  -v /path/to/your-models:/workspace/models \
+  -p 5555:5555 \
+  --name grootn17 \
+  grootn17:latest</pre>
+          </div>
+          <div class="callout c-info">
+            <b>Volume mount guide:</b><br>
+            <code>-v /path/to/Isaac-GR00T:/data</code> — your cloned repo, live-editable<br>
+            <code>-v /path/to/datasets:/workspace/datasets</code> — robot training data<br>
+            <code>-v /path/to/models:/workspace/models</code> — fine-tuned checkpoints output<br>
+            The venv lives at <code>/workspace/.venv</code> inside the image — untouched by mounts.
+          </div>
+          <div class="callout c-warn">
+            <b>Path with spaces?</b> Wrap the entire <code>-v</code> argument in quotes:<br>
+            <code>-v "/path/with spaces/Isaac-GR00T:/data"</code>
+          </div>
+          <div class="callout c-err">
+            <b>Multi-line shell commands with backslash?</b>
+            Make sure there is NO space after each <code>\</code>. If you get <code>command not found</code> errors on the flag lines, run it as a single line instead.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d6">
+        <div class="step-head" onclick="toggle('d6')">
+          <div class="step-num-wrap"><span class="step-num">06</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Activate the Virtual Environment</span>
+            <span class="step-subtitle">/workspace/.venv — all packages live here</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="callout c-warn">
+            <b>The container does NOT auto-activate the venv.</b>
+            The system Python has no packages. Always activate first.
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — inside container</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Activate venv</span>
+source /workspace/.venv/bin/activate
+
+<span class="cm"># Make it auto-activate on every shell entry</span>
+echo "source /workspace/.venv/bin/activate" >> ~/.bashrc</pre>
+          </div>
+          <div class="callout c-ok">
+            <b>Re-entering the container in future sessions:</b><br>
+            <code>docker start -ai grootn17</code> — the venv activates automatically after the bashrc line above.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d7">
+        <div class="step-head" onclick="toggle('d7')">
+          <div class="step-num-wrap"><span class="step-num">07</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Verify Installation</span>
+            <span class="step-subtitle">GPU · CUDA · GR00T import</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — inside container (venv active)</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># GPU check</span>
+python -c "import torch; print(torch.cuda.get_device_name(0)); print('CUDA:', torch.version.cuda)"
+
+<span class="cm"># GR00T check</span>
+python -c "import gr00t; print('GR00T OK')"
+
+<span class="cm"># Network / HuggingFace reachable</span>
+python -c "import requests; print(requests.get('https://huggingface.co').status_code)"</pre>
+          </div>
+          <div class="terminal">
+            <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
+            <div class="term-body">
+              <span><span class="t-prompt">(gr00t) root@container:/data# </span><span class="t-cmd">python -c "import torch; print(torch.cuda.get_device_name(0))"</span></span><br>
+              <span class="t-ok">NVIDIA GeForce RTX 5090</span><br>
+              <span class="t-ok">CUDA: 12.8</span><br>
+              <span class="t-ok">GR00T OK</span><br>
+              <span class="t-ok">200</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step done" id="d8">
+        <div class="step-head" onclick="toggle('d8')">
+          <div class="step-num-wrap"><span class="step-num">08</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Run Zero-Shot Inference</span>
+            <span class="step-subtitle">Base model · DROID demo · no fine-tuning needed</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <p>The base model (~6 GB) downloads automatically from HuggingFace on first run:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — inside container</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre">cd /data
+
+python scripts/deployment/standalone_inference_script.py \
+    <span class="fl">--model-path</span>      nvidia/GR00T-N1.7-3B \
+    <span class="fl">--dataset-path</span>    demo_data/droid_sample \
+    <span class="fl">--embodiment-tag</span>  OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT \
+    <span class="fl">--traj-ids</span> 1 2 \
+    <span class="fl">--inference-mode</span>  pytorch \
+    <span class="fl">--action-horizon</span>  8</pre>
+          </div>
+          <div class="callout c-ok">
+            <b>Policy server mode</b> — for real robot or simulation deployment, start the server then connect a client:<br>
+            <code>python gr00t/eval/run_gr00t_server.py --model-path nvidia/GR00T-N1.7-3B --embodiment-tag OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT --device cuda:0 --host 0.0.0.0 --port 5555</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card docker-step" id="d9">
+        <div class="step-head" onclick="toggle('d9')">
+          <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Fine-tune on Your Robot Data</span>
+            <span class="step-subtitle">NEW_EMBODIMENT · custom modality config</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <p>With your dataset mounted at <code>/workspace/datasets</code> and output going to <code>/workspace/models</code> (both on host disk), fine-tuning checkpoints persist across container restarts.</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — inside container</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre">cd /data
+
+<span class="cm"># Copy your modality config into the repo</span>
+mkdir -p examples/MY_ROBOT
+
+<span class="cm"># Run fine-tuning</span>
+CUDA_VISIBLE_DEVICES=0 \
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+python gr00t/experiment/launch_finetune.py \
+    <span class="fl">--base-model-path</span>       nvidia/GR00T-N1.7-3B \
+    <span class="fl">--dataset-path</span>          /workspace/datasets/your-dataset \
+    <span class="fl">--embodiment-tag</span>        NEW_EMBODIMENT \
+    <span class="fl">--modality-config-path</span>  examples/MY_ROBOT/my_robot_config.py \
+    <span class="fl">--num-gpus</span>              1 \
+    <span class="fl">--output-dir</span>            /workspace/models/grootn17_finetuned \
+    <span class="fl">--max-steps</span>             5000 \
+    <span class="fl">--global-batch-size</span>     8 \
+    <span class="fl">--gradient-accumulation-steps</span> 4 \
+    <span class="fl">--num-shards-per-epoch</span>  10 \
+    <span class="fl">--save-only-model</span> \
+    <span class="fl">--dataloader-num-workers</span> 2</pre>
+          </div>
+          <div class="callout c-info">
+            <b>Trainable parameters: 1.62B / 3.14B (51.54%)</b><br>
+            The VLM backbone is frozen. Only the diffusion action head and projector are trained — fits on 32GB VRAM with the settings above.
+          </div>
+          <div class="callout c-warn">
+            <b>Still hitting OOM?</b>
+            Drop to <code>--global-batch-size 4 --gradient-accumulation-steps 8</code>. Or add <code>--no-tune-projector</code> to reduce trainable params to ~1.09B.
+          </div>
+          <p>After training, start the server with your checkpoint:</p>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span class="docker-icon">🐳</span>bash — inside container</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre>python gr00t/eval/run_gr00t_server.py \
+    <span class="fl">--model-path</span>     /workspace/models/grootn17_finetuned \
     <span class="fl">--embodiment-tag</span> NEW_EMBODIMENT \
-    <span class="fl">--model-path</span>     /tmp/test_finetune \
-    <span class="fl">--traj-ids</span> 0 1 \
-    <span class="fl">--action-horizon</span> 16</pre>
-        </div>
-        <div class="callout c-info">
-          Saves a JPEG to <code>/tmp/open_loop_eval/traj_0.jpeg</code> — ground truth vs predicted actions with MSE. Expect 5–6% run-to-run variance due to non-deterministic augmentations.
+    <span class="fl">--device</span>         cuda:0 \
+    <span class="fl">--host</span>           0.0.0.0 \
+    <span class="fl">--port</span>           5555</pre>
+          </div>
         </div>
       </div>
+
+      <div class="step-card docker-step done" id="d10">
+        <div class="step-head" onclick="toggle('d10')">
+          <div class="step-num-wrap"><span class="step-num">10</span><div class="step-dot"></div></div>
+          <div class="step-title-wrap">
+            <span class="step-title">Save & Restore Docker Images</span>
+            <span class="step-subtitle">Commit containers · backup to disk</span>
+          </div>
+          <span class="step-chevron">▶</span>
+        </div>
+        <div class="step-body">
+          <div class="callout c-purple">
+            <b>Best practice</b>: commit your running containers to images before stopping them, then save images to disk. Containers reference images by ID — use clean names for clarity.
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash — host</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre><span class="cm"># Commit running container state → image</span>
+docker commit grootn17 grootn17:latest
+
+<span class="cm"># Save image to disk (gzip compressed)</span>
+mkdir -p /path/to/backups
+docker save grootn17:latest | gzip > /path/to/backups/grootn17.tar.gz
+
+<span class="cm"># Restore later</span>
+docker load < /path/to/backups/grootn17.tar.gz</pre>
+          </div>
+          <div class="callout c-info">
+            <b>Re-entering your container after a reboot:</b><br>
+            <code>docker start -ai grootn17</code>
+          </div>
+          <div class="callout c-warn">
+            <b>Container shows old image ID?</b>
+            Docker cannot relink a container to a new image after creation. Solution: commit container → new image → <code>docker rm</code> old container → <code>docker run</code> from new image with the same volume mounts and flags.
+          </div>
+          <div class="cb">
+            <div class="cb-head"><div class="cb-label"><span>$</span>bash — full container recreation example</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+            <pre"><span class="cm"># 1. Commit current state</span>
+docker commit grootn17 grootn17:latest
+
+<span class="cm"># 2. Remove old container</span>
+docker rm grootn17
+
+<span class="cm"># 3. Recreate from updated image</span>
+docker run -it --gpus all \
+  --ipc=host --shm-size=16g \
+  -v /path/to/Isaac-GR00T:/data \
+  -v /path/to/datasets:/workspace/datasets \
+  -v /path/to/models:/workspace/models \
+  -p 5555:5555 \
+  --name grootn17 \
+  grootn17:latest</pre>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /docker steps -->
+
+    <div class="divider"></div>
+    <div class="sec-label">Docker Quick Reference</div>
+    <table class="ref-table">
+      <tr><th>Task</th><th>Command</th></tr>
+      <tr><td>Start container</td><td><code>docker start -ai grootn17</code></td></tr>
+      <tr><td>Second terminal in running container</td><td><code>docker exec -it grootn17 bash</code></td></tr>
+      <tr><td>Copy file host → container</td><td><code>docker cp file.py grootn17:/data/file.py</code></td></tr>
+      <tr><td>Copy between containers (via host)</td><td><code>docker cp c1:/path /tmp/ && docker cp /tmp/file c2:/path</code></td></tr>
+      <tr><td>List images with sizes</td><td><code>docker images</code></td></tr>
+      <tr><td>Commit container to image</td><td><code>docker commit grootn17 grootn17:latest</code></td></tr>
+      <tr><td>Save image to file</td><td><code>docker save grootn17:latest | gzip > grootn17.tar.gz</code></td></tr>
+      <tr><td>Load image from file</td><td><code>docker load < grootn17.tar.gz</code></td></tr>
+      <tr><td>Connect container to network</td><td><code>docker network connect my_net grootn17</code></td></tr>
+    </table>
+
+    <div class="divider"></div>
+    <div class="sec-label">Docker Tips for RTX 5090</div>
+    <div class="checklist" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:20px 22px;">
+      <div class="ci"><span class="ci-icon pu">→</span><span>Always mount your repo to <code>/data</code>, not <code>/workspace</code> — mounting over <code>/workspace</code> hides the installed venv</span></div>
+      <div class="ci"><span class="ci-icon pu">→</span><span>Use <code>--ipc=host --shm-size=16g</code> — required for multi-worker dataloaders during fine-tuning</span></div>
+      <div class="ci"><span class="ci-icon pu">→</span><span>Multiple containers on the same machine share the GPU — only run one fine-tuning job at a time</span></div>
+      <div class="ci"><span class="ci-icon pu">→</span><span>For multi-container inference (policy server + simulation), put all containers on the same Docker network so they resolve each other by name</span></div>
+      <div class="ci"><span class="ci-icon pu">→</span><span>Paths with spaces must be quoted in <code>-v</code> arguments: <code>-v "/my path/repo:/data"</code></span></div>
+      <div class="ci"><span class="ci-icon pu">→</span><span>Use <code>PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True</code> to reduce fragmentation OOM errors during fine-tuning</span></div>
     </div>
 
-    <!-- S10 RESULTS -->
-    <div class="step-card done" id="s10">
-      <div class="step-head" onclick="toggle('s10')">
-        <div class="step-num-wrap"><span class="step-num">10</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Zero-Shot Inference Results</span>
-          <span class="step-subtitle">RTX 5090 · DROID demo · 2 trajectories</span>
-        </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="callout c-ok">
-          <b>✓ Zero-shot inference working on RTX 5090 — no fine-tuning required for these results.</b>
-          Base model nvidia/GR00T-N1.7-3B evaluated on the included DROID demo dataset, 2 trajectories, 200 steps each.
-        </div>
-        <p>Accuracy metrics (lower is better):</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 1</div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MSE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:700;">0.0033</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MAE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:700;">0.0376</span>
-              </div>
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);margin-top:4px;">266 timesteps · 25 inference steps</div>
-            </div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 2</div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MSE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:700;">0.0369</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:600;">MAE</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:700;">0.1168</span>
-              </div>
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);margin-top:4px;">411 timesteps · 25 inference steps</div>
-            </div>
-          </div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid rgba(57,255,143,0.2);border-radius:6px;padding:14px 18px;display:flex;gap:32px;flex-wrap:wrap;">
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MSE</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:700;">0.0201</div>
-          </div>
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MAE</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:700;">0.0772</div>
-          </div>
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg Step Time</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;">0.230s</div>
-          </div>
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Total Steps</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;">48</div>
-          </div>
-        </div>
-        <p>Detailed timing on RTX 5090:</p>
-        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--sec-label-color);font-weight:700;padding:7px 14px;border-bottom:1px solid var(--border);letter-spacing:0.12em;text-transform:uppercase;background:rgba(128,128,128,0.04);">Timing Summary</div>
-          <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);font-weight:600;">Model load (one-time)</span><span style="color:var(--p-color);font-weight:600;">401.8s</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);font-weight:600;">Total inference (48 steps)</span><span style="color:var(--p-color);font-weight:600;">11.04s</span>
-            </div>
-            <div style="height:1px;background:var(--border);margin:2px 0;"></div>
-            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);font-weight:600;">Avg per step</span><span style="color:var(--green);font-weight:700;">0.2301s</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);font-weight:600;">Min step time</span><span style="color:var(--green);font-weight:600;">0.1631s</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);font-weight:600;">Max step time</span><span style="color:var(--p-color);font-weight:600;">0.3694s</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
-              <span style="color:var(--text3);font-weight:600;">P90 step time</span><span style="color:var(--p-color);font-weight:600;">0.2948s</span>
-            </div>
-          </div>
-        </div>
-        <p>Full terminal output:</p>
-        <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output — RTX 5090 · WSL2</span></div>
-          <div class="term-body" style="font-size:11px;">
-            <span class="t-out">Model Path: nvidia/GR00T-N1.7-3B</span><br>
-            <span class="t-out">Embodiment Tag: OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT</span><br>
-            <span class="t-out">Steps per trajectory: 200 · Action Horizon: 8</span><br>
-            <span class="t-out">─────────────────────────────────────────</span><br>
-            <span class="t-out">Loading checkpoint shards: 2/2 ✓</span><br>
-            <span class="t-ok">Model loading time: 401.81s</span><br>
-            <span class="t-out">─────────────────────────────────────────</span><br>
-            <span class="t-out">Running trajectory 1 · 25 inference steps</span><br>
-            <span class="t-ok">MSE: 0.003284 · MAE: 0.037572</span><br>
-            <span class="t-out">─────────────────────────────────────────</span><br>
-            <span class="t-out">Running trajectory 2 · 25 inference steps</span><br>
-            <span class="t-ok">MSE: 0.036945 · MAE: 0.116836</span><br>
-            <span class="t-out">─────────────────────────────────────────</span><br>
-            <span class="t-ok">Average MSE: 0.020115 · Average MAE: 0.077204</span><br>
-            <span class="t-ok">Avg inference: 0.2301s/step · Min: 0.1631s · P90: 0.2948s</span><br>
-            <span class="t-ok">Done ✓</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /steps -->
-
-  <div class="divider"></div>
-
-  <div class="sec-label">Key Files Reference</div>
-  <table class="ref-table">
-    <tr><th>Path</th><th>Purpose</th></tr>
-    <tr><td><code>gr00t/experiment/launch_finetune.py</code></td><td>Main fine-tuning entry point</td></tr>
-    <tr><td><code>examples/SO100/so100_config.py</code></td><td>Example modality config for a custom embodiment</td></tr>
-    <tr><td><code>getting_started/finetune_new_embodiment.md</code></td><td>Full new-embodiment data prep tutorial</td></tr>
-    <tr><td><code>scripts/patch_triton_cuda13.sh</code></td><td>Triton sm_ version patch — required for RTX 5090</td></tr>
-    <tr><td><code>scripts/deployment/dgpu/install_deps.sh</code></td><td>Sets CUDA_HOME and GPU deps</td></tr>
-    <tr><td><code>gr00t/eval/open_loop_eval.py</code></td><td>Checkpoint validation</td></tr>
-    <tr><td><code>demo_data/cube_to_bowl_5/</code></td><td>5-episode SO100 demo dataset</td></tr>
-    <tr><td><code>gr00t/configs/finetune_config.py</code></td><td>Hyperparameters &amp; state_dropout_prob</td></tr>
-  </table>
-
-  <div class="divider"></div>
-
-  <div class="sec-label">Fine-tuning Tips for RTX 5090</div>
-  <div class="checklist" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:20px 22px;">
-    <div class="ci"><span class="ci-icon">→</span><span>Start with <code>--global-batch-size 16</code> — the 32GB 5090 is under the 40GB+ recommendation; batch-16 keeps VRAM safe</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>Train 2,000–5,000 steps for new embodiments; monitor open-loop eval MSE to judge convergence</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span><code>--state_dropout_prob</code> defaults to 0.2; lower it if your task depends heavily on proprioceptive state</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>N1.7 uses a relative EEF action space — configure robot actions as deltas from current pose for best cross-embodiment transfer</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>Add <code>--use-wandb</code> to enable Weights &amp; Biases logging during training</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>If <code>torch.compile</code> still fails post-patch, set <code>TORCH_COMPILE=0</code> before running fine-tuning</span></div>
-  </div>
+  </div><!-- /panel-docker -->
 
 </div>
 </main>
 
 <footer>
-  <div class="footer-left">GR00T N1.7 · WSL2 Install Guide · Apache 2.0</div>
+  <div class="footer-left">GR00T N1.7 · Install Guide · Apache 2.0</div>
   <div class="footer-links">
     <a href="https://github.com/NVIDIA/Isaac-GR00T" target="_blank">Official Repo ↗</a>
     <a href="https://developer.nvidia.com/isaac/gr00t" target="_blank">NVIDIA Isaac ↗</a>
@@ -964,12 +1379,32 @@ function toggleTheme() {
     });
   }
 })();
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.remove('active-docker'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  const btn = document.getElementById('tab-' + tab);
+  if (tab === 'docker') { btn.classList.add('active-docker'); }
+  else { btn.classList.add('active'); }
+}
+
 function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+
 function openStep(id) {
   const el = document.getElementById(id);
   el.classList.add('open');
   setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
+
+function openDockerStep(id) {
+  switchTab('docker');
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('open'); setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }
+  }, 50);
+}
+
 function cp(btn) {
   const pre = btn.closest('.cb').querySelector('pre');
   navigator.clipboard.writeText(pre.innerText).then(() => {
