@@ -377,6 +377,7 @@ footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex;
       <a class="toc-item" onclick="openStep('s7')"><span class="toc-num">07</span>Triton Patch</a>
       <a class="toc-item" onclick="openStep('s8')"><span class="toc-num">08</span>Verify</a>
       <a class="toc-item" onclick="openStep('s9')"><span class="toc-num">09</span>Fine-tune</a>
+      <a class="toc-item" onclick="openStep('s10')"><span class="toc-num">10</span>Results ✓</a>
     </div>
   </div>
 
@@ -712,6 +713,129 @@ source ~/.bashrc</pre>
         <div class="callout c-info">
           Saves a JPEG to <code>/tmp/open_loop_eval/traj_0.jpeg</code> — ground truth vs predicted actions with MSE. Expect 5–6% variance between runs due to non-deterministic augmentations.
         </div>
+      </div>
+    </div>
+
+    <!-- S10 INFERENCE RESULTS -->
+    <div class="step-card done" id="s10">
+      <div class="step-head" onclick="toggle('s10')">
+        <div class="step-num-wrap"><span class="step-num">10</span><div class="step-dot"></div></div>
+        <div class="step-title-wrap">
+          <span class="step-title">Zero-Shot Inference Results</span>
+          <span class="step-subtitle">RTX 5090 · DROID demo · 2 trajectories</span>
+        </div>
+        <span class="step-chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <div class="callout c-ok">
+          <b>✓ Zero-shot inference working on RTX 5090 — no fine-tuning required for these results.</b>
+          Base model nvidia/GR00T-N1.7-3B evaluated on the included DROID demo dataset, 2 trajectories, 200 steps each.
+        </div>
+
+        <!-- METRICS -->
+        <p>Accuracy metrics (lower is better):</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 1</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MSE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:600;">0.0033</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MAE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:600;">0.0376</span>
+              </div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px;">266 timesteps · 25 inference steps</div>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Trajectory 2</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MSE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:600;">0.0369</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">MAE</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--cyan);font-weight:600;">0.1168</span>
+              </div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px;">411 timesteps · 25 inference steps</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY ROW -->
+        <div style="background:var(--bg2);border:1px solid rgba(57,255,143,0.2);border-radius:6px;padding:14px 18px;display:flex;gap:32px;flex-wrap:wrap;">
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MSE</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:600;">0.0201</div>
+          </div>
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg MAE</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--green);font-weight:600;">0.0772</div>
+          </div>
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Avg Step Time</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:600;">0.230s</div>
+          </div>
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">Total Steps</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cyan);font-weight:600;">48</div>
+          </div>
+        </div>
+
+        <!-- TIMING -->
+        <p>Detailed timing on RTX 5090:</p>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);padding:7px 14px;border-bottom:1px solid var(--border);letter-spacing:0.12em;text-transform:uppercase;background:rgba(255,255,255,0.015);">Timing Summary</div>
+          <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+              <span style="color:var(--text3);">Model load (one-time)</span><span style="color:var(--text2);">401.8s</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+              <span style="color:var(--text3);">Total inference (48 steps)</span><span style="color:var(--text2);">11.04s</span>
+            </div>
+            <div style="height:1px;background:var(--border);margin:2px 0;"></div>
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+              <span style="color:var(--text3);">Avg per step</span><span style="color:var(--green);font-weight:600;">0.2301s</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+              <span style="color:var(--text3);">Min step time</span><span style="color:var(--green);">0.1631s</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+              <span style="color:var(--text3);">Max step time</span><span style="color:var(--text2);">0.3694s</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+              <span style="color:var(--text3);">P90 step time</span><span style="color:var(--text2);">0.2948s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FULL TERMINAL OUTPUT -->
+        <p>Full terminal output:</p>
+        <div class="terminal">
+          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output — RTX 5090 · WSL2</span></div>
+          <div class="term-body" style="font-size:11px;">
+            <span class="t-out">Model Path: nvidia/GR00T-N1.7-3B</span><br>
+            <span class="t-out">Embodiment Tag: OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT</span><br>
+            <span class="t-out">Steps per trajectory: 200 · Action Horizon: 8</span><br>
+            <span class="t-out">─────────────────────────────────────────</span><br>
+            <span class="t-out">Loading checkpoint shards: 2/2 ✓</span><br>
+            <span class="t-ok">Model loading time: 401.81s</span><br>
+            <span class="t-out">─────────────────────────────────────────</span><br>
+            <span class="t-out">Running trajectory 1 · 25 inference steps</span><br>
+            <span class="t-ok">MSE: 0.003284 · MAE: 0.037572</span><br>
+            <span class="t-out">─────────────────────────────────────────</span><br>
+            <span class="t-out">Running trajectory 2 · 25 inference steps</span><br>
+            <span class="t-ok">MSE: 0.036945 · MAE: 0.116836</span><br>
+            <span class="t-out">─────────────────────────────────────────</span><br>
+            <span class="t-ok">Average MSE: 0.020115 · Average MAE: 0.077204</span><br>
+            <span class="t-ok">Avg inference: 0.2301s/step · Min: 0.1631s · P90: 0.2948s</span><br>
+            <span class="t-ok">Done ✓</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
