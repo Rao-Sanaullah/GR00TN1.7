@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GR00T N1.7 on WSL2 — Complete Install Guide</title>
+<title>GR00T N1.7 on WSL2 — Install Guide</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
@@ -29,7 +29,6 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -42,7 +41,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ── NOISE OVERLAY ── */
 body::before {
   content: '';
   position: fixed;
@@ -53,7 +51,7 @@ body::before {
   opacity: 0.6;
 }
 
-/* ── HERO ── */
+/* HERO */
 .hero {
   position: relative;
   padding: 72px 0 56px;
@@ -78,7 +76,6 @@ body::before {
   background: radial-gradient(ellipse, rgba(57,255,143,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-
 .wrap { max-width: 820px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
 
 .eyebrow {
@@ -126,7 +123,6 @@ body::before {
   line-height: 1.7;
   animation: fadeUp 0.5s 0.1s ease both;
 }
-
 .hero-badges {
   display: flex;
   flex-wrap: wrap;
@@ -150,10 +146,8 @@ body::before {
   to   { opacity:1; transform:translateY(0); }
 }
 
-/* ── LAYOUT ── */
+/* LAYOUT */
 .page { padding: 52px 0 100px; }
-
-/* ── SECTION HEADER ── */
 .sec-label {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
@@ -164,7 +158,7 @@ body::before {
   padding-left: 1px;
 }
 
-/* ── CALLOUT BOXES ── */
+/* CALLOUTS */
 .callout {
   border-left: 3px solid;
   padding: 13px 16px;
@@ -186,9 +180,8 @@ body::before {
   border-radius: 3px;
 }
 
-/* ── STEP CARDS ── */
+/* STEPS */
 .steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 44px; }
-
 .step-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -213,18 +206,8 @@ body::before {
 .step-head:hover { background: rgba(255,255,255,0.015); }
 .step-card.open .step-head { border-bottom-color: var(--border); }
 
-.step-num-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.step-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text3);
-}
+.step-num-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.step-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text3); }
 .step-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
@@ -232,27 +215,12 @@ body::before {
   background: transparent;
   transition: all 0.2s;
 }
-.step-card.done .step-dot {
-  background: var(--green);
-  border-color: var(--green);
-  box-shadow: 0 0 8px var(--green);
-}
-.step-card.open .step-dot {
-  border-color: var(--green);
-  background: var(--green-dim);
-}
+.step-card.done .step-dot { background: var(--green); border-color: var(--green); box-shadow: 0 0 8px var(--green); }
+.step-card.open .step-dot { border-color: var(--green); background: var(--green-dim); }
 
 .step-title-wrap { display: flex; flex-direction: column; gap: 2px; }
-.step-title {
-  font-weight: 600;
-  font-size: 14.5px;
-  color: var(--text);
-}
-.step-subtitle {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  color: var(--text3);
-}
+.step-title { font-weight: 600; font-size: 14.5px; color: var(--text); }
+.step-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text3); }
 .step-card.done .step-title { color: #8fb; }
 
 .step-chevron {
@@ -274,15 +242,9 @@ body::before {
 @keyframes bodyIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
 
 p { color: var(--text2); font-size: 14px; }
-p + p { margin-top: 6px; }
 
-/* ── CODE BLOCKS ── */
-.cb {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  overflow: hidden;
-}
+/* CODE BLOCKS */
+.cb { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
 .cb-head {
   display: flex;
   justify-content: space-between;
@@ -291,12 +253,7 @@ p + p { margin-top: 6px; }
   border-bottom: 1px solid var(--border);
   background: rgba(255,255,255,0.015);
 }
-.cb-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  color: var(--text3);
-  letter-spacing: 0.05em;
-}
+.cb-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text3); }
 .cb-label span { color: var(--cyan); margin-right: 6px; }
 .copy-btn {
   background: none;
@@ -308,7 +265,6 @@ p + p { margin-top: 6px; }
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.15s;
-  letter-spacing: 0.05em;
 }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.ok    { border-color: var(--green); color: var(--green); }
@@ -320,209 +276,59 @@ pre {
   padding: 16px 18px;
   overflow-x: auto;
   color: #b0c4de;
-  tab-size: 2;
 }
-.cm  { color: #3a5070; }   /* comment */
-.kw  { color: var(--green); }  /* keyword/cmd */
-.fl  { color: var(--cyan); }   /* flag */
-.st  { color: var(--yellow); } /* string */
-.ok-line { color: #5edd8a; }   /* success output */
-.err-line{ color: var(--red); } /* error output */
+.cm  { color: #3a5070; }
+.fl  { color: var(--cyan); }
+.st  { color: var(--yellow); }
 
-/* ── SUCCESS TERMINAL ── */
-.terminal {
-  background: #020508;
-  border: 1px solid #0f1e14;
-  border-radius: 7px;
-  overflow: hidden;
-  margin-bottom: 6px;
-}
+/* TERMINAL */
+.terminal { background: #020508; border: 1px solid #0f1e14; border-radius: 7px; overflow: hidden; }
 .term-bar {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 14px;
-  background: #080f0a;
-  border-bottom: 1px solid #0f1e14;
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 14px; background: #080f0a; border-bottom: 1px solid #0f1e14;
 }
 .term-dot { width: 10px; height: 10px; border-radius: 50%; }
-.td1 { background: #ff5f5a; }
-.td2 { background: #febc2e; }
-.td3 { background: #28c840; }
-.term-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  color: #2a4030;
-  margin-left: 6px;
-  letter-spacing: 0.05em;
-}
-.term-body {
-  padding: 14px 18px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  line-height: 1.7;
-  color: #4a7a5a;
-}
+.td1{background:#ff5f5a} .td2{background:#febc2e} .td3{background:#28c840}
+.term-title { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #2a4030; margin-left: 6px; }
+.term-body { padding: 14px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.7; color: #4a7a5a; }
 .term-body .t-prompt { color: #1e6640; }
 .term-body .t-cmd    { color: #6be89a; }
-.term-body .t-out    { color: #3a6050; display: block; margin-left: 0; }
+.term-body .t-out    { color: #3a6050; display: block; }
 .term-body .t-ok     { color: var(--green); font-weight: 600; }
-.term-body .t-err    { color: var(--red); }
 .term-body .t-warn   { color: #8a7030; }
+.term-body .t-err    { color: var(--red); }
 
-/* ── OUTCOME BADGE ── */
-.outcome {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  padding: 6px 14px;
-  border-radius: 4px;
-  border: 1px solid;
-  font-weight: 500;
-}
-.out-ok  { color: var(--green); border-color: rgba(57,255,143,0.25); background: var(--green-dim); }
-.out-ok::before  { content: '✓'; }
-.out-err { color: var(--red);   border-color: rgba(255,77,109,0.25);  background: var(--red-dim); }
-.out-err::before { content: '✗'; }
+/* DIVIDER */
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); margin: 36px 0; }
 
-/* ── DIVIDER ── */
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border2), transparent);
-  margin: 36px 0;
-}
-
-/* ── TABLE ── */
-.ref-table {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  overflow: hidden;
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.ref-table th {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text3);
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  background: rgba(255,255,255,0.015);
-}
-.ref-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.035);
-  color: var(--text2);
-  vertical-align: top;
-}
+/* TABLE */
+.ref-table { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; width: 100%; border-collapse: collapse; font-size: 13px; }
+.ref-table th { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; background: rgba(255,255,255,0.015); }
+.ref-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.035); color: var(--text2); vertical-align: top; }
 .ref-table tr:last-child td { border-bottom: none; }
-.ref-table code {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  color: var(--cyan);
-  background: var(--cyan-dim);
-  padding: 1px 6px;
-  border-radius: 3px;
-}
+.ref-table code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 6px; border-radius: 3px; }
 
-/* ── CHECKLIST ── */
+/* CHECKLIST */
 .checklist { display: flex; flex-direction: column; gap: 10px; }
-.ci {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  font-size: 13.5px;
-  color: var(--text2);
-  line-height: 1.6;
-}
-.ci-icon {
-  font-family: 'IBM Plex Mono', monospace;
-  color: var(--green);
-  font-size: 13px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.ci code {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  color: var(--cyan);
-  background: var(--cyan-dim);
-  padding: 1px 5px;
-  border-radius: 3px;
-}
+.ci { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--text2); line-height: 1.6; }
+.ci-icon { font-family: 'IBM Plex Mono', monospace; color: var(--green); font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+.ci code { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 5px; border-radius: 3px; }
 
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 30px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.footer-left {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--text3);
-}
-.footer-links {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.footer-links a {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--text3);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.footer-links a:hover { color: var(--cyan); }
-
-/* ── TOC ── */
-.toc {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  padding: 18px 20px;
-  margin-bottom: 36px;
-}
-.toc-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 12px;
-}
-.toc-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.toc-item {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--text2);
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  padding: 4px 11px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-decoration: none;
-}
+/* TOC */
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 18px 20px; margin-bottom: 36px; }
+.toc-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+.toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.toc-item { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text2); background: var(--bg2); border: 1px solid var(--border); padding: 4px 11px; border-radius: 3px; cursor: pointer; transition: all 0.15s; text-decoration: none; }
 .toc-item:hover { border-color: var(--green); color: var(--green); }
 .toc-num { color: var(--text3); margin-right: 5px; }
 
-/* ── RESPONSIVE ── */
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 30px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-left { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: var(--cyan); }
+
 @media (max-width: 600px) {
   .hero { padding: 48px 0 36px; }
   .step-head { grid-template-columns: 36px 1fr auto; gap: 10px; padding: 14px 16px; }
@@ -533,7 +339,6 @@ footer {
 </head>
 <body>
 
-<!-- HERO -->
 <header class="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
@@ -544,7 +349,7 @@ footer {
       <span class="sub">on WSL2 Ubuntu 22.04</span>
     </h1>
     <p class="hero-desc">
-      A battle-tested installation guide for NVIDIA Isaac GR00T N1.7 fine-tuning on Windows Subsystem for Linux with an RTX 5090. Includes real fixes for corporate SSL, permission errors, and the Blackwell Triton patch.
+      A complete, battle-tested installation guide for NVIDIA Isaac GR00T N1.7 on Windows Subsystem for Linux. Covers fine-tuning setup with real fixes for RTX 5090 Blackwell hardware.
     </p>
     <div class="hero-badges">
       <span class="hbadge hb-g">GR00T N1.7</span>
@@ -559,7 +364,6 @@ footer {
 <main class="page">
 <div class="wrap">
 
-  <!-- TOC -->
   <div class="toc">
     <div class="toc-title">Jump to step</div>
     <div class="toc-list">
@@ -567,24 +371,18 @@ footer {
       <a class="toc-item" onclick="openStep('s2')"><span class="toc-num">02</span>System Deps</a>
       <a class="toc-item" onclick="openStep('s3')"><span class="toc-num">03</span>Clone Repo</a>
       <a class="toc-item" onclick="openStep('s4')"><span class="toc-num">04</span>Fix Permissions</a>
-      <a class="toc-item" onclick="openStep('s5')"><span class="toc-num">05</span>Corporate SSL</a>
-      <a class="toc-item" onclick="openStep('s6')"><span class="toc-num">06</span>Install uv + Sync</a>
-      <a class="toc-item" onclick="openStep('s7')"><span class="toc-num">07</span>CUDA_HOME</a>
-      <a class="toc-item" onclick="openStep('s8')"><span class="toc-num">08</span>Triton Patch</a>
-      <a class="toc-item" onclick="openStep('s9')"><span class="toc-num">09</span>Verify</a>
-      <a class="toc-item" onclick="openStep('s10')"><span class="toc-num">10</span>Fine-tune</a>
+      <a class="toc-item" onclick="openStep('s5')"><span class="toc-num">05</span>Install uv</a>
+      <a class="toc-item" onclick="openStep('s6')"><span class="toc-num">06</span>CUDA_HOME</a>
+      <a class="toc-item" onclick="openStep('s7')"><span class="toc-num">07</span>Triton Patch</a>
+      <a class="toc-item" onclick="openStep('s8')"><span class="toc-num">08</span>Verify</a>
+      <a class="toc-item" onclick="openStep('s9')"><span class="toc-num">09</span>Fine-tune</a>
     </div>
   </div>
 
-  <!-- PREREQUISITES CALLOUTS -->
   <div class="sec-label">Before You Begin</div>
   <div class="callout c-warn" style="margin-bottom:8px;">
     <b>⚠ RTX 5090 (Blackwell / sm_120) — Triton Patch Required</b>
-    Triton 3.3.1 pinned by PyTorch 2.7 does NOT support sm_120. Fine-tuning will crash with <code>RuntimeError in ptx_get_version()</code> without Step 8.
-  </div>
-  <div class="callout c-info" style="margin-bottom:8px;">
-    <b>Corporate Proxy / VPN?</b>
-    If your machine sits behind a corporate firewall (Zscaler, etc.), you'll hit SSL <code>UnknownIssuer</code> errors. Steps 5 covers the CA cert fix.
+    Triton 3.3.1 pinned by PyTorch 2.7 does NOT support sm_120. Fine-tuning will crash with <code>RuntimeError in ptx_get_version()</code> without Step 7.
   </div>
   <div class="callout c-info">
     <b>CUDA Drivers on Windows</b>
@@ -593,12 +391,11 @@ footer {
 
   <div class="divider"></div>
 
-  <!-- STEPS -->
   <div class="sec-label">Installation Steps</div>
   <div class="steps">
 
     <!-- S1 -->
-    <div class="step-card open done" id="s1">
+    <div class="step-card done" id="s1">
       <div class="step-head" onclick="toggle('s1')">
         <div class="step-num-wrap"><span class="step-num">01</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
@@ -611,7 +408,7 @@ footer {
         <p>Open your WSL2 terminal and confirm the GPU and CUDA toolkit are visible:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre><span class="cm"># Must show RTX 5090 + driver version (e.g. 570.xx)</span>
+          <pre><span class="cm"># Must show RTX 5090 + driver version</span>
 nvidia-smi
 
 <span class="cm"># Should show: release 12.8</span>
@@ -623,7 +420,7 @@ python3.10 --version</pre>
         <div class="callout c-warn">
           <b>nvcc not found?</b>
           Install the CUDA toolkit: <code>sudo apt install -y nvidia-cuda-toolkit</code><br>
-          Or use NVIDIA's official installer at developer.nvidia.com/cuda-downloads (select Linux → x86_64 → Ubuntu → 22.04 → WSL-Ubuntu).
+          Or use NVIDIA's official installer at developer.nvidia.com/cuda-downloads (Linux → x86_64 → Ubuntu → 22.04 → WSL-Ubuntu).
         </div>
         <div class="callout c-warn">
           <b>python3.10 not found?</b>
@@ -645,7 +442,7 @@ python3.10 --version</pre>
       <div class="step-body">
         <div class="callout c-err">
           <b>Install git-lfs BEFORE cloning.</b>
-          Skipping this causes parquet files in <code>demo_data/</code> to arrive as corrupted LFS pointer stubs — not actual data.
+          Skipping this causes parquet files in <code>demo_data/</code> to arrive as corrupted LFS pointer stubs instead of actual data.
         </div>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
@@ -669,7 +466,7 @@ git lfs install</pre>
         <span class="step-chevron">▶</span>
       </div>
       <div class="step-body">
-        <p>GR00T uses git submodules for external dependencies. The <code style="font-family:monospace;font-size:12px;color:var(--cyan)">--recurse-submodules</code> flag fetches everything in one shot:</p>
+        <p>GR00T uses git submodules for external dependencies. The <code style="font-family:monospace;color:var(--cyan);font-size:12px;">--recurse-submodules</code> flag fetches everything in one shot:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>git clone --recurse-submodules https://github.com/NVIDIA/Isaac-GR00T
@@ -682,101 +479,45 @@ cd Isaac-GR00T</pre>
       </div>
     </div>
 
-    <!-- S4 ── REAL FIX: PERMISSIONS -->
+    <!-- S4 PERMISSIONS -->
     <div class="step-card done" id="s4">
       <div class="step-head" onclick="toggle('s4')">
         <div class="step-num-wrap"><span class="step-num">04</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
           <span class="step-title">Fix Directory Permissions</span>
-          <span class="step-subtitle">⚠ Real issue — root-owned clone</span>
+          <span class="step-subtitle">⚠ Common issue — root-owned clone</span>
         </div>
         <span class="step-chevron">▶</span>
       </div>
       <div class="step-body">
         <div class="callout c-err">
-          <b>If you cloned with sudo (or as root), the .venv creation will fail:</b>
+          <b>If cloned as root, uv fails immediately with:</b>
           <code>error: failed to create directory .venv: Permission denied (os error 13)</code>
         </div>
-        <p>Check ownership first:</p>
+        <p>Check ownership and fix if needed:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>ls -la ~/workspace/Grootn17/</pre>
-        </div>
-        <p>If the directory is owned by <code style="font-family:monospace;color:var(--cyan);font-size:12px;">root root</code> instead of your user, fix it:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre><span class="cm"># Replace ~/workspace/Grootn17/Isaac-GR00T with your actual path</span>
-sudo chown -R $USER:$USER ~/workspace/Grootn17/Isaac-GR00T</pre>
+          <pre><span class="cm"># Check who owns the directory</span>
+ls -la ..
+
+<span class="cm"># If owned by root, take ownership</span>
+sudo chown -R $USER:$USER .
+</pre>
         </div>
         <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output</span></div>
+          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">what to look for</span></div>
           <div class="term-body">
-            <span><span class="t-prompt">$ </span><span class="t-cmd">ls -la ~/workspace/Grootn17/</span></span><br>
-            <span class="t-out">drwxr-xr-x  3 <span class="t-err">root  root</span>  4096 Apr 22 09:52 Isaac-GR00T</span><br>
-            <span><span class="t-prompt">$ </span><span class="t-cmd">sudo chown -R $USER:$USER ~/workspace/Grootn17/Isaac-GR00T</span></span><br>
-            <span class="t-out"><span class="t-ok"># No output = success</span></span>
+            <span class="t-out"><span class="t-err">drwxr-xr-x  root  root</span>  Isaac-GR00T   ← needs fixing</span><br>
+            <span class="t-out"><span class="t-ok">drwxr-xr-x  user  user</span>  Isaac-GR00T   ← correct</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- S5 ── REAL FIX: SSL / CORPORATE CERT -->
+    <!-- S5 UV SYNC -->
     <div class="step-card done" id="s5">
       <div class="step-head" onclick="toggle('s5')">
         <div class="step-num-wrap"><span class="step-num">05</span><div class="step-dot"></div></div>
-        <div class="step-title-wrap">
-          <span class="step-title">Install Corporate CA Certificate</span>
-          <span class="step-subtitle">⚠ Real issue — SSL UnknownIssuer behind VPN/proxy</span>
-        </div>
-        <span class="step-chevron">▶</span>
-      </div>
-      <div class="step-body">
-        <div class="callout c-err">
-          <b>Behind a corporate firewall? You'll see this error:</b>
-          <code>invalid peer certificate: UnknownIssuer</code><br>
-          This happens because the company proxy (e.g. Zscaler) intercepts HTTPS and re-signs with its own CA that WSL doesn't trust.
-        </div>
-        <p>Copy your company's CA certificate (the <code style="font-family:monospace;color:var(--cyan);font-size:12px;">.cer</code> file) into the WSL trust store. The file must be renamed to <code style="font-family:monospace;color:var(--cyan);font-size:12px;">.crt</code> in the destination:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre><span class="cm"># Adjust path to wherever your CA.cer lives</span>
-sudo cp ~/workspace/CA.cer /usr/local/share/ca-certificates/company-CA.crt
-
-<span class="cm"># Rebuild the trust store (should print "1 added")</span>
-sudo update-ca-certificates</pre>
-        </div>
-        <div class="callout c-info">
-          <b>update-ca-certificates output you want to see:</b>
-          <code>1 added, 0 removed; done.</code> — warnings about "duplicate" entries are harmless.
-        </div>
-        <p>Then tell uv (and pip/requests) to use the system cert bundle by adding these to your <code style="font-family:monospace;color:var(--cyan);font-size:12px;">~/.bashrc</code>:</p>
-        <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash — persist to ~/.bashrc</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
-          <pre>echo 'export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt' >> ~/.bashrc
-echo 'export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt' >> ~/.bashrc
-source ~/.bashrc</pre>
-        </div>
-        <div class="callout c-warn">
-          <b>Why export for each new shell?</b>
-          uv has its own TLS stack (rustls) and reads <code>SSL_CERT_FILE</code> at runtime. Without the export, it ignores the system trust store even after <code>update-ca-certificates</code>.
-        </div>
-        <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output</span></div>
-          <div class="term-body">
-            <span><span class="t-prompt">$ </span><span class="t-cmd">sudo update-ca-certificates</span></span><br>
-            <span class="t-out">Updating certificates in /etc/ssl/certs...</span><br>
-            <span class="t-warn">rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL</span><br>
-            <span class="t-warn">rehash: warning: skipping duplicate certificate in company-CA.pem</span><br>
-            <span class="t-out"><span class="t-ok">1 added, 0 removed; done.</span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- S6 ── INSTALL UV + SYNC -->
-    <div class="step-card done" id="s6">
-      <div class="step-head" onclick="toggle('s6')">
-        <div class="step-num-wrap"><span class="step-num">06</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
           <span class="step-title">Install uv and Sync Environment</span>
           <span class="step-subtitle">137 packages · ~19 min on first run</span>
@@ -784,44 +525,43 @@ source ~/.bashrc</pre>
         <span class="step-chevron">▶</span>
       </div>
       <div class="step-body">
-        <p>GR00T uses <strong>uv</strong> for fast, reproducible dependency management. Install it, then sync the full environment with Python 3.10:</p>
+        <p>GR00T uses <strong>uv</strong> for fast, reproducible dependency management:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash — from inside Isaac-GR00T/</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre><span class="cm"># Install uv</span>
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source $HOME/.local/bin/env
 
-<span class="cm"># Sync (SSL env vars must be set from Step 5 first!)</span>
+<span class="cm"># Create venv and install all dependencies</span>
 uv sync --python 3.10</pre>
         </div>
         <div class="callout c-info">
           <b>What gets installed:</b>
-          torch 2.7.1+cu128, flash-attn 2.7.4, TensorRT 10.15, deepspeed, transformers, torchcodec, and 130+ more packages.
-          The first run takes ~19 minutes — subsequent runs resolve in seconds.
+          torch 2.7.1+cu128, flash-attn 2.7.4, TensorRT 10.15, deepspeed, transformers, torchcodec, and 130+ more packages. First run takes ~19 minutes.
         </div>
         <div class="callout c-warn">
           <b>flash-attn re-validation on every uv run?</b>
-          Normal. uv re-checks the cached wheel URL each time (~2–3s). It is NOT rebuilding from source.
+          Normal — uv re-checks the cached wheel URL each time (~2–3s). It is not rebuilding from source.
         </div>
         <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output (truncated)</span></div>
+          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
           <div class="term-body">
             <span><span class="t-prompt">$ </span><span class="t-cmd">uv sync --python 3.10</span></span><br>
             <span class="t-out">Resolved 180 packages in 39.67s</span><br>
-            <span class="t-out">  Built gr00t @ file:///home/sana2/workspace/Grootn17/Isaac-GR00T</span><br>
+            <span class="t-out">  Built gr00t @ file:///...</span><br>
             <span class="t-out">  Built tensorrt-cu12==10.15.1.29</span><br>
             <span class="t-out">  Built deepspeed==0.17.6</span><br>
             <span class="t-out">Prepared 136 packages in 18m 43s</span><br>
-            <span class="t-out"><span class="t-ok">Installed 137 packages in 471ms</span></span>
+            <span class="t-ok">Installed 137 packages in 471ms</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- S7 ── CUDA_HOME -->
-    <div class="step-card done" id="s7">
-      <div class="step-head" onclick="toggle('s7')">
-        <div class="step-num-wrap"><span class="step-num">07</span><div class="step-dot"></div></div>
+    <!-- S6 CUDA_HOME -->
+    <div class="step-card done" id="s6">
+      <div class="step-head" onclick="toggle('s6')">
+        <div class="step-num-wrap"><span class="step-num">06</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
           <span class="step-title">Set CUDA_HOME</span>
           <span class="step-subtitle">Required for fine-tuning · deepspeed compilation</span>
@@ -830,8 +570,8 @@ uv sync --python 3.10</pre>
       </div>
       <div class="step-body">
         <div class="callout c-err">
-          <b>Fine-tuning will fail immediately with:</b>
-          <code>CUDA_HOME is unset</code> — deepspeed needs this to compile CUDA extensions.
+          <b>Fine-tuning will fail with:</b>
+          <code>CUDA_HOME is unset</code> — deepspeed needs this to compile CUDA extensions at runtime.
         </div>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
@@ -840,15 +580,16 @@ echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
 source ~/.bashrc</pre>
         </div>
         <div class="callout c-info">
-          <b>Alternatively</b>, run the provided script which sets this and other GPU paths: <code>uv run bash scripts/deployment/dgpu/install_deps.sh</code>
+          <b>Alternatively</b>, run the provided script which sets this and other GPU paths:
+          <code>uv run bash scripts/deployment/dgpu/install_deps.sh</code>
         </div>
       </div>
     </div>
 
-    <!-- S8 ── TRITON PATCH -->
-    <div class="step-card done" id="s8">
-      <div class="step-head" onclick="toggle('s8')">
-        <div class="step-num-wrap"><span class="step-num">08</span><div class="step-dot"></div></div>
+    <!-- S7 TRITON PATCH -->
+    <div class="step-card done" id="s7">
+      <div class="step-head" onclick="toggle('s7')">
+        <div class="step-num-wrap"><span class="step-num">07</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
           <span class="step-title">Patch Triton for RTX 5090 (Blackwell)</span>
           <span class="step-subtitle">⚠ Critical — sm_120 not supported by Triton 3.3.1</span>
@@ -857,16 +598,16 @@ source ~/.bashrc</pre>
       </div>
       <div class="step-body">
         <div class="callout c-err">
-          <b>Without this patch, any torch.compile path crashes with:</b>
+          <b>Without this patch, fine-tuning crashes with:</b>
           <code>RuntimeError in Triton's ptx_get_version()</code><br>
-          Triton 3.3.1 (pinned by PyTorch 2.7) does not recognise CUDA Blackwell architecture sm_120.
+          Triton 3.3.1 (pinned by PyTorch 2.7) does not recognise Blackwell GPU architecture sm_120.
         </div>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>uv run bash scripts/patch_triton_cuda13.sh</pre>
         </div>
         <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output</span></div>
+          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
           <div class="term-body">
             <span><span class="t-prompt">$ </span><span class="t-cmd">uv run bash scripts/patch_triton_cuda13.sh</span></span><br>
             <span class="t-out">Uninstalled 1 package in 2ms</span><br>
@@ -877,22 +618,22 @@ source ~/.bashrc</pre>
         </div>
         <div class="callout c-info">
           <b>Why "cuda13"?</b>
-          The script is named for Thor/Spark CUDA 13.x platforms but fixes the same sm_ version detection bug that hits sm_120 on CUDA 12.8. Run it regardless of your CUDA version.
+          The script is named for Thor/Spark CUDA 13.x platforms but fixes the same sm_ version detection bug affecting sm_120 on CUDA 12.8. Run it regardless of your CUDA version.
         </div>
         <div class="callout c-warn">
           <b>Still hitting torch.compile errors after the patch?</b>
-          Add <code>TORCH_COMPILE=0</code> to your environment or pass <code>--no-compile</code> to the fine-tune script. TensorRT inference is fully supported on Blackwell regardless.
+          Set <code>TORCH_COMPILE=0</code> in your environment. TensorRT inference is fully supported on Blackwell regardless.
         </div>
       </div>
     </div>
 
-    <!-- S9 ── VERIFY -->
-    <div class="step-card done" id="s9">
-      <div class="step-head" onclick="toggle('s9')">
-        <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
+    <!-- S8 VERIFY -->
+    <div class="step-card done" id="s8">
+      <div class="step-head" onclick="toggle('s8')">
+        <div class="step-num-wrap"><span class="step-num">08</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
           <span class="step-title">Verify Installation</span>
-          <span class="step-subtitle">import gr00t · zero-shot inference test</span>
+          <span class="step-subtitle">import gr00t · smoke test</span>
         </div>
         <span class="step-chevron">▶</span>
       </div>
@@ -902,15 +643,13 @@ source ~/.bashrc</pre>
           <pre>uv run python -c "import gr00t; print('GR00T installed successfully')"</pre>
         </div>
         <div class="terminal">
-          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">actual output</span></div>
+          <div class="term-bar"><div class="term-dot td1"></div><div class="term-dot td2"></div><div class="term-dot td3"></div><span class="term-title">expected output</span></div>
           <div class="term-body">
             <span><span class="t-prompt">$ </span><span class="t-cmd">uv run python -c "import gr00t; print('GR00T installed successfully')"</span></span><br>
-            <span class="t-out">Uninstalled 1 package in 1ms</span><br>
-            <span class="t-out">Installed 1 package in 9ms</span><br>
             <span class="t-ok">GR00T installed successfully</span>
           </div>
         </div>
-        <p>Optionally run a zero-shot inference test on the included demo dataset (downloads the base model ~6GB from HuggingFace on first run):</p>
+        <p>Optionally run zero-shot inference on the included demo dataset (downloads ~6GB base model from HuggingFace on first run):</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>uv run python scripts/deployment/standalone_inference_script.py \
@@ -921,17 +660,13 @@ source ~/.bashrc</pre>
     <span class="fl">--inference-mode</span>  pytorch \
     <span class="fl">--action-horizon</span>  8</pre>
         </div>
-        <div class="callout c-warn">
-          <b>HuggingFace download fails behind proxy?</b>
-          Set: <code>export HF_ENDPOINT=https://huggingface.co</code> and ensure your SSL env vars from Step 5 are still active.
-        </div>
       </div>
     </div>
 
-    <!-- S10 ── FINE-TUNE -->
-    <div class="step-card" id="s10">
-      <div class="step-head" onclick="toggle('s10')">
-        <div class="step-num-wrap"><span class="step-num">10</span><div class="step-dot"></div></div>
+    <!-- S9 FINE-TUNE -->
+    <div class="step-card" id="s9">
+      <div class="step-head" onclick="toggle('s9')">
+        <div class="step-num-wrap"><span class="step-num">09</span><div class="step-dot"></div></div>
         <div class="step-title-wrap">
           <span class="step-title">Run Fine-tuning on Your Robot Data</span>
           <span class="step-subtitle">NEW_EMBODIMENT · single GPU</span>
@@ -941,7 +676,7 @@ source ~/.bashrc</pre>
       <div class="step-body">
         <p>Replace the dataset path and modality config with your own. The demo below uses the included SO100 5-episode dataset as a smoke test:</p>
         <div class="cb">
-          <div class="cb-head"><div class="cb-label"><span>$</span>bash — single GPU (RTX 5090)</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
+          <div class="cb-head"><div class="cb-label"><span>$</span>bash — single GPU</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>CUDA_VISIBLE_DEVICES=0 uv run python \
     gr00t/experiment/launch_finetune.py \
     <span class="fl">--base-model-path</span>      nvidia/GR00T-N1.7-3B \
@@ -951,19 +686,19 @@ source ~/.bashrc</pre>
     <span class="fl">--num-gpus</span>             1 \
     <span class="fl">--output-dir</span>           /tmp/test_finetune \
     <span class="fl">--max-steps</span>            2000 \
-    <span class="fl">--global-batch-size</span>    32 \
+    <span class="fl">--global-batch-size</span>    16 \
     <span class="fl">--dataloader-num-workers</span> 4</pre>
         </div>
         <div class="callout c-warn">
           <b>OOM on 32GB VRAM?</b>
-          The repo recommends 40GB+. Start with <code>--global-batch-size 16</code> or <code>8</code>. Smaller batches work fine with proportionally more steps.
+          The repo recommends 40GB+. Start with <code>--global-batch-size 16</code> or lower. Smaller batches work fine with more steps.
         </div>
         <div class="callout c-ok">
           <b>Using your own robot data?</b>
           Replace <code>demo_data/cube_to_bowl_5</code> with your dataset path and <code>examples/SO100/so100_config.py</code> with your modality config.
-          See <code>getting_started/finetune_new_embodiment.md</code> for the full data format spec.
+          See <code>getting_started/finetune_new_embodiment.md</code> in the official repo for the full data format spec.
         </div>
-        <p>After training, validate with open-loop evaluation:</p>
+        <p>Validate with open-loop evaluation after training:</p>
         <div class="cb">
           <div class="cb-head"><div class="cb-label"><span>$</span>bash</div><button class="copy-btn" onclick="cp(this)">copy</button></div>
           <pre>uv run python gr00t/eval/open_loop_eval.py \
@@ -974,7 +709,7 @@ source ~/.bashrc</pre>
     <span class="fl">--action-horizon</span> 16</pre>
         </div>
         <div class="callout c-info">
-          Output saved to <code>/tmp/open_loop_eval/traj_0.jpeg</code> — ground truth vs predicted actions with MSE. Expect 5–6% variance between runs due to non-deterministic augmentations.
+          Saves a JPEG to <code>/tmp/open_loop_eval/traj_0.jpeg</code> — ground truth vs predicted actions with MSE. Expect 5–6% variance between runs due to non-deterministic augmentations.
         </div>
       </div>
     </div>
@@ -983,40 +718,38 @@ source ~/.bashrc</pre>
 
   <div class="divider"></div>
 
-  <!-- REF TABLE -->
   <div class="sec-label">Key Files Reference</div>
   <table class="ref-table">
     <tr><th>Path</th><th>Purpose</th></tr>
     <tr><td><code>gr00t/experiment/launch_finetune.py</code></td><td>Main fine-tuning entry point</td></tr>
     <tr><td><code>examples/SO100/so100_config.py</code></td><td>Example modality config for a custom embodiment</td></tr>
     <tr><td><code>getting_started/finetune_new_embodiment.md</code></td><td>Full new-embodiment data prep tutorial</td></tr>
-    <tr><td><code>scripts/patch_triton_cuda13.sh</code></td><td>Triton sm_ version patch (required for RTX 5090)</td></tr>
+    <tr><td><code>scripts/patch_triton_cuda13.sh</code></td><td>Triton sm_ version patch — required for RTX 5090</td></tr>
     <tr><td><code>scripts/deployment/dgpu/install_deps.sh</code></td><td>Sets CUDA_HOME and GPU deps</td></tr>
-    <tr><td><code>gr00t/eval/open_loop_eval.py</code></td><td>Checkpoint validation (ground truth vs predicted)</td></tr>
+    <tr><td><code>gr00t/eval/open_loop_eval.py</code></td><td>Checkpoint validation</td></tr>
     <tr><td><code>demo_data/cube_to_bowl_5/</code></td><td>5-episode SO100 demo dataset</td></tr>
     <tr><td><code>gr00t/configs/finetune_config.py</code></td><td>Hyperparameters &amp; state_dropout_prob</td></tr>
   </table>
 
   <div class="divider"></div>
 
-  <!-- TIPS -->
   <div class="sec-label">Fine-tuning Tips for RTX 5090</div>
   <div class="checklist" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:20px 22px;">
-    <div class="ci"><span class="ci-icon">→</span><span>Start with <code>--global-batch-size 16</code> — the 32GB 5090 is just under the 40GB+ recommendation; batch-16 keeps VRAM safe</span></div>
+    <div class="ci"><span class="ci-icon">→</span><span>Start with <code>--global-batch-size 16</code> — the 32GB 5090 is under the 40GB+ recommendation; batch-16 keeps VRAM safe</span></div>
     <div class="ci"><span class="ci-icon">→</span><span>Train 2,000–5,000 steps for new embodiments; monitor open-loop eval MSE to judge convergence</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span><code>--state_dropout_prob</code> defaults to 0.2 in the CLI; lower it if your task depends heavily on proprioceptive state</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>N1.7 uses a <strong>relative EEF action space</strong> — configure your robot actions as deltas from current pose for best cross-embodiment transfer</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>Add <code>--use-wandb</code> to the fine-tune command to enable Weights &amp; Biases logging</span></div>
-    <div class="ci"><span class="ci-icon">→</span><span>If <code>torch.compile</code> still fails post-patch, set <code>TORCH_COMPILE=0</code> in your environment before running fine-tuning</span></div>
+    <div class="ci"><span class="ci-icon">→</span><span><code>--state_dropout_prob</code> defaults to 0.2; lower it if your task depends heavily on proprioceptive state</span></div>
+    <div class="ci"><span class="ci-icon">→</span><span>N1.7 uses a relative EEF action space — configure robot actions as deltas from current pose for best cross-embodiment transfer</span></div>
+    <div class="ci"><span class="ci-icon">→</span><span>Add <code>--use-wandb</code> to enable Weights &amp; Biases logging during training</span></div>
+    <div class="ci"><span class="ci-icon">→</span><span>If <code>torch.compile</code> still fails post-patch, set <code>TORCH_COMPILE=0</code> before running fine-tuning</span></div>
   </div>
 
-</div><!-- /wrap -->
+</div>
 </main>
 
 <footer>
-  <div class="footer-left">GR00T N1.7 · Apache 2.0 · Community Guide</div>
+  <div class="footer-left">GR00T N1.7 · WSL2 Install Guide · Apache 2.0</div>
   <div class="footer-links">
-    <a href="https://github.com/NVIDIA/Isaac-GR00T" target="_blank">GitHub ↗</a>
+    <a href="https://github.com/NVIDIA/Isaac-GR00T" target="_blank">Official Repo ↗</a>
     <a href="https://developer.nvidia.com/isaac/gr00t" target="_blank">NVIDIA Isaac ↗</a>
     <a href="https://huggingface.co/nvidia/GR00T-N1.7-3B" target="_blank">HuggingFace ↗</a>
     <a href="https://arxiv.org/abs/2503.14734" target="_blank">Paper ↗</a>
@@ -1040,10 +773,6 @@ function cp(btn) {
     setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('ok'); }, 2000);
   });
 }
-// Open first step by default
-document.addEventListener('DOMContentLoaded', () => {
-  // all steps start closed except toggled ones
-});
 </script>
 </body>
 </html>
