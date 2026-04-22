@@ -19,7 +19,7 @@ A complete, battle-tested installation guide for [NVIDIA Isaac GR00T N1.7](https
 
 ## What's Fixed Here
 
-Issues not covered in the official docs — full details with terminal output in the [HTML guide](./index.html):
+Issues not covered in the official docs — full details with terminal output in the [HTML guide](https://rao-sanaullah.github.io/GR00TN1.7/):
 
 - 🔴 **Permission denied on `.venv`** — repo cloned as root, `uv sync` fails
 - 🔴 **Triton crash on RTX 5090** — sm_120 (Blackwell) not recognised by Triton 3.3.1 pinned in PyTorch 2.7
